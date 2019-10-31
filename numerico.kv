@@ -1,0 +1,35 @@
+<menu>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Numerico'
+        Button:
+            text:'Biseccion' 
+            on_release: root.manager.current = "biseccion"
+        
+        Button:
+            text: 'Newton'
+            on_release: root.manager.current = "newton"
+        Button:
+            text: 'Cholesky'
+            on_release: root.manager.current = "cholesky"
+<biseccion>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Biseccion'
+
+<newton>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Newton'
+        
+        
+
+<cholesky>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Cholesky'
+
