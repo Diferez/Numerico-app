@@ -18,6 +18,46 @@
         orientation: 'vertical'
         Label:
             text: 'Biseccion'
+        GridLayout:
+            cols:2
+            orientation: 'horizontal'
+            Label:
+                text: 'Xi'
+            TextInput:
+                id: Xi
+            Label:
+                text: 'Xs'
+            TextInput:
+                id: Xs
+            Label:
+                text: 'Tol'
+            TextInput:
+                id: Tol
+            Label:
+                text: 'Ite'
+            TextInput:
+                id: Ite
+            Label:
+                text: 'F(x)'
+            TextInput:
+                id: F
+        
+        Button:
+            text: 'Correr'
+            on_release:
+                root.manager.get_screen('runBiseccion').start()
+                root.manager.current = "runBiseccion"
+
+
+
+<runBiseccion>:
+    viewclass: 'Label'
+    RecycleBoxLayout:
+        default_size: None, dp(56)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
 
 <newton>:
     BoxLayout:

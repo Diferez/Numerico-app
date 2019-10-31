@@ -1,0 +1,1 @@
+from .biseccion import biseccion
