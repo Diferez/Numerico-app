@@ -1,0 +1,1 @@
+No agregar los archivos que se generen en esta carpeta al git
