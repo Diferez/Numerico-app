@@ -18,6 +18,7 @@ def biseccion(func, low, high, n, tol):
     ret = []
     print("|iter|       a      |      xm      |      b       |   f(Xm)  |     E   |")
     print("| 1  |","%.10f" % low,"|", "%.10f" % xm,"|", "%.10f" % high,"|", "%.1e" % func(xm),"|         |")
+    ret.append([cont,"%.10f" % low,"%.10f" % xm, "%.10f" % high,str("%.1e" % func(xm)),""])
 
     while(cont < n and error > tol and func(xm) != 0):
 
@@ -30,7 +31,8 @@ def biseccion(func, low, high, n, tol):
         xm = (low + high)/2.0
         error = abs(xm-xtemp)
         cont += 1
-        ret.append([cont,low,xm,high,func(xm),error])
+        #ret.append([cont,low,xm,high,func(xm),error])
+        ret.append([cont,"%.10f" % low,"%.10f" % xm, "%.10f" % high,str("%.1e" % func(xm)),"%.1e" % error])
         print("|",str(cont).ljust(2),"|","%.10f" % low,"|", "%.10f" % xm,"|", "%.10f" % high,"|", str("%.1e" % func(xm)).ljust(8),"|", "%.1e" % error,"|")
     if(func(xm) == 0):
         print(xm, 'es Raiz')
@@ -54,4 +56,4 @@ if __name__ == "__main__":
     tol = 1e-7
     n = 100
     x = biseccion(f, Xi, Xs, n, tol)
-    print("x = ", x, 'f(x) = ', f(x))
+    

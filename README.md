@@ -7,3 +7,7 @@ Sebastian Bustamante Cardona
 
 John F kennedy
 
+
+
+Biblioteca de parseo
+https://github.com/AxiaCore/py-expression-eval
