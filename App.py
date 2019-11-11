@@ -17,12 +17,15 @@ CORS(app)
 
 @app.route('/biseccion',methods =['GET'])
 def biseccion():
+    Xi = traduccion('Xi')
+    Xs = traduccion('Xs')
     title = traduccion('biseccion')
     tolerancia = traduccion('tolerancia')
     correr = traduccion('correr')
     iteraciones = traduccion('iteraciones')
     funcion = traduccion('funcion')
-    return render_template('biseccion.html', title = title, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion)
+    salir = traduccion('salir')
+    return render_template('biseccion.html', title = title, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
 
 
 @app.route('/biseccion',methods =['POST'])
@@ -92,12 +95,14 @@ def numerico():
     title = traduccion('title')
     biseccion = traduccion('biseccion')
     busquedas = traduccion('busquedas')
-
-    return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas)
+    salir = traduccion('salir')
+    return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
 
 def traduccion(key):
-    Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función'}
-    En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'Xi:':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function'}
+    Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir'}
+    En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit'}
 
     if(lang == 'Es'):
         return Es[key]
