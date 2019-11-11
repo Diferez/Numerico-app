@@ -35,7 +35,7 @@
             <div class="column">
                 <h2 class="ui header">
                     <div class="content">
-                        Bisección
+                        {{title}}
                     </div>
                 </h2>
                 <form class="ui large form" method="post" action="/biseccion">
@@ -58,13 +58,13 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="Tolerancia">
+                                    <input type="text" name="Tol" placeholder="{{tolerancia}}">
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="Iteraciones">
+                                    <input type="number" name="Ite" placeholder="{{iteraciones}}">
                                 </div>
                             </div>
                         </div>
@@ -73,13 +73,13 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="text" name="F" placeholder="Funcion">
+                                    <input type="text" name="F" placeholder="{{funcion}}">
                                 </div>
                             </div>
                         </div>
 
                         <br>
-                        <input type="submit" class="ui green large submit button" value="Correr">
+                        <input type="submit" class="ui green large submit button" value="{{correr}}">
                     </div>
                 </form>
             </div>

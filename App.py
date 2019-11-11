@@ -17,11 +17,17 @@ CORS(app)
 
 @app.route('/biseccion',methods =['GET'])
 def biseccion():
-    return render_template('biseccion.html', title = 'Bisección')
+    title = traduccion('biseccion')
+    tolerancia = traduccion('tolerancia')
+    correr = traduccion('correr')
+    iteraciones = traduccion('iteraciones')
+    funcion = traduccion('funcion')
+    return render_template('biseccion.html', title = title, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion)
 
 
 @app.route('/biseccion',methods =['POST'])
 def biseccion_post():
+    title = traduccion('biseccion')
     Xi = float(request.form.get('Xi'))
     Xs = float(request.form.get('Xs'))
     Tol = float(request.form.get('Tol'))
@@ -31,11 +37,12 @@ def biseccion_post():
     print(Xi,Xs,Tol,Ite,F)
     datos = [Xi,Xs,Tol,Ite,F]
 
-    return redirect(url_for('biseccion_show', title = 'Bisección',datos = datos))
+    return redirect(url_for('biseccion_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
 @app.route('/biseccion/show',methods =['GET'])
 def biseccion_show():
+    title = traduccion('biseccion')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que se enviaron previamente
     Xi =float(datos[0])
@@ -61,7 +68,7 @@ def biseccion_show():
         plt.clf()
         #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = 'Biseccion Run', lista = lista, tam = len(lista),Tol = Tol, r = r)
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r)
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
@@ -82,15 +89,19 @@ def busquedas_show():
 #Ruta Raiz
 @app.route('/numerico',methods =['GET'])
 def numerico():
-    title = ""
-    if(lang == 'Es'):
-        title = "Análisis numérico"
-        biseccion = "Bisección"
-        busquedas = "Búsquedas Incrementales"
-    elif(lang == 'En'):
-        title = "Numerical analysis"
-        biseccion = "Bisection"
-        busquedas = "Incremental search"
+    title = traduccion('title')
+    biseccion = traduccion('biseccion')
+    busquedas = traduccion('busquedas')
+
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas)
 
+def traduccion(key):
+    Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función'}
+    En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'Xi:':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function'}
+
+    if(lang == 'Es'):
+        return Es[key]
+    else:
+        return En[key]
 app.run(host= '0.0.0.0')
+
