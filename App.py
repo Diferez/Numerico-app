@@ -8,6 +8,7 @@ from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 
 
+lang = 'En'
 #Inicializacion de la App
 app = Flask(__name__, template_folder='templates',static_folder='statics')
 CORS(app)
@@ -64,6 +65,7 @@ def biseccion_show():
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
+    return render_template('busquedas.html', title = 'Búsquedas Incrementales')
     #Completar
     pass
 
@@ -80,6 +82,15 @@ def busquedas_show():
 #Ruta Raiz
 @app.route('/numerico',methods =['GET'])
 def numerico():
-    return render_template('numerico.html', title = 'Numérico')
+    title = ""
+    if(lang == 'Es'):
+        title = "Análisis numérico"
+        biseccion = "Bisección"
+        busquedas = "Búsquedas Incrementales"
+    elif(lang == 'En'):
+        title = "Numerical analysis"
+        biseccion = "Bisection"
+        busquedas = "Incremental search"
+    return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas)
 
 app.run(host= '0.0.0.0')
