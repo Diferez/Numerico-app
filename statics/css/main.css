@@ -1,0 +1,298 @@
+.ui.menu .item img.logo {
+    margin-right: 1em;
+    width: 3.5em;
+  }
+  input[type="checkbox"] {
+    width: 13px !important ;
+    -webkit-appearance: checkbox !important;
+  }
+  label{ cursor:pointer; }
+  
+  .ui.card {
+    height: 240px !important;
+  }
+  
+  .ui.link.cards .card {
+    width: 210px !important;
+  }
+  
+  .main.container {
+    padding-top: 7em;
+  }
+  
+  #top {
+    background: #1b1c1d;
+  }
+  
+  #top.moving {
+    background: url('/imgs/background.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  #top-layer {
+    background: rgba(0, 0, 10, 1);
+    height: 100vh;
+    -webkit-transition:background 2s;
+    -moz-transition:background 2s;
+    -o-transition:background 2s;
+    transition:background 2s;
+  }
+  
+  #top-layer.moving {
+    background: rgba(0, 0, 10, 0.8);
+  }
+  
+  #map-container {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #map {
+    position: absolute;
+    top: 48px;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .legend {
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 30px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    right: 10px;
+    z-index: 1;
+  }
+  
+  .legend h4 {
+    margin: 0 0 10px;
+  }
+  
+  .legend div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+  }
+  
+  #map-overlay {
+    font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 25%;
+    max-width: 320px;
+    min-width: 190px;
+    top: 68px;
+    left: 0;
+    padding: 15px;
+  }
+  
+  #map-overlay .map-overlay-inner {
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  #map-overlay h3 {
+    line-height: 24px;
+    display: block;
+    margin: 0 0 10px;
+  }
+  
+  #map-overlay input {
+    background-color: transparent;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    cursor: ew-resize;
+  }
+  
+  #calculated-data {
+    display: none;
+  }
+  
+  .hidden.menu {
+    display: none;
+  }
+  
+  .masthead.segment {
+    min-height: 700px;
+    padding: 1em 0em;
+  }
+  .masthead .logo.item img {
+    margin-right: 1em;
+  }
+  .masthead .ui.menu .ui.button {
+    margin-left: 0.5em;
+  }
+  .masthead h1.ui.header {
+    margin-top: 3em;
+    margin-bottom: 0em;
+    font-size: 4em;
+    font-weight: normal;
+  }
+  .masthead h2 {
+    font-size: 1.7em;
+    font-weight: normal;
+  }
+  
+  .ui.vertical.stripe {
+    padding: 8em 0em;
+  }
+  
+  #modulos, #equipo, #patrocinadores {
+   background: #fff !important;
+  }
+  
+  .fullscreenChart {
+    height:85vh !important;
+  }
+  
+  .simParams .form .field>label {
+    text-align: center;
+  }
+  
+  .pulses {
+    height: 75px;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .ui.vertical.stripe h3 {
+    font-size: 2em;
+  }
+  .ui.vertical.stripe .button + h3,
+  .ui.vertical.stripe p + h3 {
+    margin-top: 3em;
+  }
+  .ui.vertical.stripe .floated.image {
+    clear: both;
+  }
+  .ui.vertical.stripe p {
+    font-size: 1.33em;
+  }
+  .ui.vertical.stripe .horizontal.divider {
+    margin: 3em 0em;
+  }
+  
+  .quote.stripe.segment {
+    padding: 0em;
+  }
+  .quote.stripe.segment .grid .column {
+    padding-top: 5em;
+    padding-bottom: 5em;
+  }
+  
+  .footer.segment {
+    padding: 5em 0em;
+  }
+  
+  .secondary.pointing.menu .toc.item {
+    display: none;
+  }
+  
+  @media only screen and (max-width: 700px) {
+    #landing .ui.fixed.menu {
+      display: none !important;
+    }
+    .secondary.pointing.menu .item,
+    .secondary.pointing.menu .menu {
+      display: none;
+    }
+    .secondary.pointing.menu .toc.item {
+      display: block;
+    }
+    .masthead.segment {
+      min-height: 350px;
+    }
+    .masthead h1.ui.header {
+      font-size: 2em;
+      margin-top: 1.5em;
+    }
+    .masthead h2 {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+    }
+  }
+  
+  /*!
+   * # Range slider for Semantic UI.
+   * 
+   */
+  
+   .ui.range {
+      width: 100%;
+      height: 20px;
+  }
+  
+  .ui.range .inner {
+      margin: 0 10px 0 10px;
+      height: 20px;
+      position: relative;
+  }
+  
+  .ui.range .inner:hover {
+      cursor: pointer;
+  }
+  
+  .ui.range .inner .track {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      border-radius: 4px;
+      top: 9px;
+      left: 0;
+      background-color: rgba(0,0,0,.05);
+  }
+  
+  .ui.inverted.range .inner .track {
+      background-color: rgba(255,255,255,.08);
+  }
+  
+  .ui.range .inner .track-fill {
+      position: absolute;
+      width: 0;
+      height: 4px;
+      border-radius: 4px;
+      top: 9px;
+      left: 0;
+      background-color: #1b1c1d;
+  }
+  
+  .ui.inverted.range .inner .track-fill {
+      background-color: #545454;
+  }
+  
+  .ui.range .inner .thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 20px;
+      background: #fff linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+      background: #fff -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+      background: #fff -o-linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+      background: #fff -moz-linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+      border-radius: 100%;
+      box-shadow: 0 1px 2px 0 rgba(34,36,38,.15),0 0 0 1px rgba(34,36,38,.15) inset;
+  }
+  
+  .alphaTooltip[data-tooltip][data-inverted]:after {
+    white-space: pre-line;
+  }
+  
+  @media only screen and (max-width: 800px){
+    [data-tooltip][data-inverted]:after {
+      white-space: pre-line;
+    }
+  }
