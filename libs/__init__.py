@@ -1,1 +1,2 @@
 from .biseccion import biseccion
+from .busquedasincrementales import busquedasincrementales
