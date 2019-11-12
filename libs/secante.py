@@ -1,7 +1,7 @@
 import math
 
 
-def Secante(x0, x1, tol, n, f):
+def secante(x0, x1, tol, n, f):
 
 
     if (f(x0) == 0):
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     x1 = 1
     n= 100
     tol= 1e-7
-    x = Secante(x0, x1, tol, n, f)
+    x = secante(x0, x1, tol, n, f)
