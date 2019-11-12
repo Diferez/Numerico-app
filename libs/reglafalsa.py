@@ -21,8 +21,10 @@ def reglaFalsa(func, low, high, n, tol):
     cont = 1
     xm = high - (func(high) * (high - low)) / (func(high) - func(low))
     error = 1+tol
+    lista = []
     print("|iter|       a      |      xm      |      b       |   f(Xm)  |     E   |")
     print ("| 1  |",str(low).ljust(12),"|","%.10f" % xm,"|","%.10f" % high,"|","%.1e" % func(xm),"|         |")
+    lista.append([1, low,"%.10f" % xm,"%.10f" % high,"%.1e" % func(xm),""])
     while(cont < n and error > tol and func(xm) != 0):
         
         if not same_sign(func(xm), func(high)):
@@ -34,6 +36,7 @@ def reglaFalsa(func, low, high, n, tol):
         error = abs(xm-xtemp)
         cont += 1
         print ("|",str(cont).ljust(2),"|","%.10f" %low,"|","%.10f" % xm,"|","%.10f" % high,"|",str("%.1e" % func(xm)).ljust(8),"|","%.1e" % error, "|")
+        lista.append([cont, low,"%.10f" % xm,"%.10f" % high,"%.1e" % func(xm),"%.1e" % error])
     if(func(xm) == 0):
         print(xm, 'es Raiz')
     else:
@@ -42,7 +45,7 @@ def reglaFalsa(func, low, high, n, tol):
         else:
             print("Fracaso en ", n, "iteraciones")
     
-    return xm
+    return xm,lista
 
 
 def f(x):

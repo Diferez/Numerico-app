@@ -166,7 +166,7 @@ def min(lista):
 @app.route('/raices',methods =['GET'])
 def raices():
     Xo = traduccion('Xo')
-    title = traduccion('raices multiples')
+    title = traduccion('raices')
     tol = traduccion('tolerancia')
     correr = traduccion('correr')
     iteraciones = traduccion('iteraciones')
@@ -231,7 +231,7 @@ def raices_show():
         # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
         #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache)
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
 
 
 #Ruta Raiz
@@ -243,18 +243,20 @@ def numerico():
     busquedas = traduccion('busquedas')
     raices = traduccion('raices')
     salir = traduccion('salir')
-    return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
+    return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir, dic = tradudict())
 
 
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
-          'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2'
+          'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
+          'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios Ej: 1 2 3'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
-          'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2'
+          'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
+          'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces Ex: 1 2 3'
           }
 def traduccion(key):
 
@@ -269,7 +271,6 @@ def tradudict():
 
 @app.route('/newton',methods =['GET'])
 def newton():
-
     return render_template('newton.html', title = 'Newton', dic = tradudict())
 
 
@@ -339,6 +340,255 @@ def newton_show():
     
     return render_template('newton_show.html', title = 'Newton', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
     #Completar
+
+
+@app.route('/reglaFalsa',methods =['GET'])
+def reglaFalsa():
+
+    return render_template('reglaFalsa.html', title = traduccion('reglaFalsa'), dic = tradudict())
+
+@app.route('/reglaFalsa',methods =['POST'])
+def reglaFalsa_post():
+    
+    Xi = float(request.form.get('Xi'))
+    Xs = float(request.form.get('Xs'))
+    Tol = float(request.form.get('Tol'))
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+
+    print(Xi,Xs,Tol,Ite,F)
+    datos = [Xi,Xs,Tol,Ite,F]
+    
+    return redirect(url_for('reglaFalsa_show', title = traduccion('reglaFalsa'),datos = datos))
+
+
+@app.route('/reglaFalsa/show',methods =['GET'])
+def reglaFalsa_show():
+
+    datos = request.args.getlist('datos', None)
+    Xi =float(datos[0])
+    Xs =float(datos[1])
+    Tol = float(datos[2])
+    Ite = float(datos[3])
+    Fo = parse_expr(datos[4].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    
+    r,lista = libs.reglaFalsa(F,Xi,Xs,Ite,Tol)
+    
+    anticache = random.randint(1,99999999)
+
+
+    # Xi = min(lista)
+    # Xs = max(lista)
+    # Xif = Xi-((Xs-Xi)/4)
+    # Xsf = Xs+((Xs-Xi)/4)
+    #Xif = Xo
+    #Xsf = r+((r-Xo)/10)
+    cont = 1
+    for item in lista:
+        delt = (Xs-Xi)/10
+        xx = np.linspace(Xi-delt,Xs+delt, 1000)
+        
+        yy = F(xx)
+
+
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.plot(float(item[3]),F(float(item[3])),'k*')
+        plt.plot(float(item[2]),F(float(item[2])),'r*')
+        plt.plot(xx, np.transpose(yy))
+
+        plt.axhline(y=0, color='k')
+        #plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(item[0]))
+        
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.clf()
+        cont = cont + 1
+        Xi = Xi if Xi == float(item[1]) else float(item[1])
+        Xs = Xs if Xs == float(item[3]) else float(item[3])
+    
+    return render_template('reglaFalsa_show.html', title = traduccion('reglaFalsa'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
+    #Completar
+
+
+@app.route('/secante',methods =['GET'])
+def secante():
+
+    return render_template('secante.html', title = traduccion('secante'), dic = tradudict())
+
+@app.route('/secante',methods =['POST'])
+def secante_post():
+    
+    Xi = float(request.form.get('Xi'))
+    Xs = float(request.form.get('Xs'))
+    Tol = float(request.form.get('Tol'))
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+
+    print(Xi,Xs,Tol,Ite,F)
+    datos = [Xi,Xs,Tol,Ite,F]
+    
+    return redirect(url_for('secante_show', title = traduccion('secante'),datos = datos))
+
+
+
+@app.route('/secante/show',methods =['GET'])
+def secante_show():
+
+    datos = request.args.getlist('datos', None)
+    Xi =float(datos[0])
+    Xs =float(datos[1])
+    Tol = float(datos[2])
+    Ite = float(datos[3])
+    Fo = parse_expr(datos[4].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    
+    r,lista = libs.secante(Xi,Xs,Tol,Ite,F)
+    
+    anticache = random.randint(1,99999999)
+
+
+    # Xi = min(lista)
+    # Xs = max(lista)
+    # Xif = Xi-((Xs-Xi)/4)
+    # Xsf = Xs+((Xs-Xi)/4)
+    Xif = Xi
+    Xsf = Xs
+    cont = 1
+    
+    for i,item in enumerate(lista):
+        if(i == 0):
+            continue
+        temp = Xsf
+        Xsf = float(item[1])
+        delt = (Xs-Xi)
+        xx = np.linspace(Xi-delt,Xs+delt, 1000)
+        
+        yy = F(xx)
+        x1, y1 = [Xif, Xsf], [F(Xif), F(Xsf)]
+        
+        plt.plot(xx, np.transpose(yy))
+        plt.plot(x1, y1, marker = 'o')
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.axhline(y=0, color='k')
+        #plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(item[0]))
+        
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.clf()
+        cont = cont + 1
+        Xif = temp
+        
+        
+        #Xi = Xi if Xi == float(item[1]) else float(item[1])
+        #Xs = Xs if Xs == float(item[3]) else float(item[3])
+    
+    return render_template('secante_show.html', title = traduccion('secante'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
+    #Completar
+
+
+@app.route('/puntoFijo',methods =['GET'])
+def puntoFijo():
+    return render_template('puntoFijo.html', title = traduccion('puntoFijo'), dic = tradudict())
+
+
+@app.route('/puntoFijo',methods =['POST'])
+def puntoFijo_post():
+    
+    Xo = float(request.form.get('Xo'))
+    Tol = float(request.form.get('Tol'))
+    
+
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+    G = request.form.get('G')
+    print(Xo,Tol,Ite,F,G)
+    datos = [Xo,Tol,Ite,F,G]
+    
+    return redirect(url_for('puntoFijo_show', title = traduccion('puntoFijo'),datos = datos))
+
+@app.route('/puntoFijo/show',methods =['GET'])
+def puntoFijo_show():
+
+    datos = request.args.getlist('datos', None)
+    Xo =float(datos[0])
+    Tol = float(datos[1])
+    Ite = float(datos[2])
+    Fo = parse_expr(datos[3].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    if(datos[4]!=""):
+        
+        Go = parse_expr(datos[4].replace('^','**'))
+        x = Symbol('x')
+        G = lambdify(x, Go)
+    else:
+        #
+        #Inventarse algo pa cuando no menta G(X)
+        #
+        Go = Fo.diff(x)
+        G = lambdify(x, Go)
+    
+    r,lista = libs.puntofijo(F,G,Xo,Tol,Ite)
+    
+    anticache = random.randint(1,99999999)
+
+
+    # Xi = min(lista)
+    # Xs = max(lista)
+    # Xif = Xi-((Xs-Xi)/4)
+    # Xsf = Xs+((Xs-Xi)/4)
+    Xif = Xo
+    Xsf = r+((r-Xo)/2)
+    cont = 1
+    for item in lista:
+
+        xx = np.linspace(Xif,Xsf, 1000)
+        
+        yy = F(xx)
+        Gyy = G(xx)
+
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.plot(float(item[1]),G(float(item[1])),'r*')
+        plt.plot(xx, np.transpose(yy))
+        plt.plot(xx, np.transpose(Gyy))
+        plt.axhline(y=0, color='k')
+        #plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(item[0]))
+        
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.clf()
+        cont = cont + 1
+    
+    return render_template('puntoFijo_show.html', title = traduccion('puntoFijo'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
+    #Completar
+
+
+@app.route('/jacobi',methods =['GET'])
+def jacobi():
+    return render_template('jacobi.html', title = 'Jacobi', dic = tradudict())
+
+@app.route('/jacobi',methods =['POST'])
+def jacobi_post():
+    
+    Xo = float(request.form.get('Xo'))
+    Tol = float(request.form.get('Tol'))
+    M = np.zeros((4,4))
+
+    for i in range(4):
+        for j in range(4):
+            M[i,j]=request.form.get('X{0}{1}'.format(i,j))
+
+    print(M)
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+    G = request.form.get('G')
+    print(Xo,Tol,Ite,F,G)
+    datos = [Xo,Tol,Ite,F,G]
+    
+    return redirect(url_for('jacobi_show', title = 'Jacobi',datos = datos))
 
 app.run(host= '0.0.0.0', debug=True)
 
