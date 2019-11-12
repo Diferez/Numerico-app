@@ -10,13 +10,14 @@ def busquedasincrementales(f, x0, delta, n):
     if (f(x0) == 0):
         print(x0, "es Raiz")
         return x0
-
+    lista = []   
     x1 = x0 + delta
     cont = 0
     while ( cont < n):
         x0 = x1
         x1 = x0 + delta
         if not(same_sign(f(x0),f(x1))) :
+            lista.append([x0,x1])
             print("Hay una raiz de f en [" , x0, x1 , "]")
         cont += 1
     
@@ -29,7 +30,7 @@ def busquedasincrementales(f, x0, delta, n):
         else:
             print("Fracaso en ", n, "iteraciones")
 
-    return x0
+    return x0, lista
 
 
 def f(x):

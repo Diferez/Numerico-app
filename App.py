@@ -1,11 +1,16 @@
+
 import matplotlib.pyplot as plt
 import numpy as np
 import libs
+import random
 
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask_cors import CORS
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
+
+
+
 
 
 lang = 'En'
@@ -30,6 +35,7 @@ def biseccion():
 
 @app.route('/biseccion',methods =['POST'])
 def biseccion_post():
+    
     title = traduccion('biseccion')
     Xi = float(request.form.get('Xi'))
     Xs = float(request.form.get('Xs'))
@@ -45,7 +51,9 @@ def biseccion_post():
 
 @app.route('/biseccion/show',methods =['GET'])
 def biseccion_show():
+    salir = traduccion('salir')
     title = traduccion('biseccion')
+    bshowr = traduccion('bshowr')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que se enviaron previamente
     Xi =float(datos[0])
@@ -58,8 +66,13 @@ def biseccion_show():
     #Formateo de los datos
     r,lista = libs.biseccion(F,Xi,Xs,Ite,Tol)
     #Ejecucion del metodo
+    Xitemp=Xi
+    Xstemp =Xs
+    anticache = random.randint(1,99999999)
     for item in lista:
-        xx = np.linspace(Xi, Xs, 1000)
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
         yy = F(xx)
         plt.plot(float(item[1]),F(float(item[1])),'k*')
         plt.plot(float(item[3]),F(float(item[3])),'k*')
@@ -67,27 +80,90 @@ def biseccion_show():
         plt.axhline(y=0, color='k')
         plt.axvline(x=0, color='k')
         plt.suptitle('Iteracion {0}'.format(item[0]))
-        plt.savefig('statics/temp/{0}.png'.format(item[0]))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
         plt.clf()
+        # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
+        # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
         #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r)
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache)
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
-    return render_template('busquedas.html', title = 'Búsquedas Incrementales')
-    #Completar
-    pass
+    salir = traduccion('salir')
+    title = traduccion('busquedas')
+    Xo = traduccion('Xo')
+    delta = traduccion('delta')
+    iteraciones = traduccion('iteraciones')
+    tolerancia = traduccion('tolerancia')
+    funcion = traduccion('funcion')
+    return render_template('busquedas.html', title = title, Xo = Xo, delta = delta, iteraciones = iteraciones, funcion = funcion, salir = salir, dic = tradudict())
 
 @app.route('/busquedas',methods =['POST'])
 def busquedas_post():
-    #Completar
-    pass
+    title = traduccion('busquedas')
+    Xo = float(request.form.get('Xo'))
+    Delta = float(request.form.get('Delta'))
+
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+    print(Xo,Delta,Ite,F)
+    datos = [Xo,Delta,Ite,F]
+    
+    return redirect(url_for('busquedas_show', title = title,datos = datos))
 
 @app.route('/busquedas/show',methods =['GET'])
 def busquedas_show():
+    salir = traduccion('salir')
+    title = traduccion('busquedas')
+    datos = request.args.getlist('datos', None)
+    Xo =float(datos[0])
+    Delta = float(datos[1])
+    Ite = float(datos[2])
+    Fo = parse_expr(datos[3].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    r,lista = libs.busquedasincrementales(F,Xo,Delta,Ite)
+    anticache = random.randint(1,99999999)
+
+
+    Xi = min(lista)
+    Xs = max(lista)
+    Xif = Xi-((Xs-Xi)/4)
+    Xsf = Xs+((Xs-Xi)/4)
+    cont = 1
+    for item in lista:
+
+        xx = np.linspace(Xif,Xsf, 1000)
+        
+        yy = F(xx)
+        plt.plot(float(item[0]),F(float(item[0])),'k*')
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.plot(xx, np.transpose(yy))
+        plt.axhline(y=0, color='k')
+        plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(cont))
+        
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.clf()
+        cont = cont + 1
+    
+    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir)
     #Completar
     pass
+
+def max(lista):
+    maxn = 0
+    for item in lista:
+        for x in item:
+            maxn = float(x) if maxn<float(x) else maxn
+    return maxn
+def min(lista):
+    minn = 0
+    for item in lista:
+        for x in item:
+            minn = float(x) if minn>float(x) else minn
+    return minn
 
 #Ruta Raiz
 @app.route('/numerico',methods =['GET'])
@@ -98,15 +174,25 @@ def numerico():
     salir = traduccion('salir')
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
 
+
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial'
+          }
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point'
+          }
 def traduccion(key):
-    Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir'}
-    En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit'}
+
 
     if(lang == 'Es'):
         return Es[key]
     else:
         return En[key]
-app.run(host= '0.0.0.0')
+
+def tradudict():
+    return Es if lang == 'Es' else En
+
+app.run(host= '0.0.0.0', debug=True)
 

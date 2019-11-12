@@ -35,22 +35,22 @@
             <div class="column">
                 <h2 class="ui header">
                     <div class="content">
-                        Búsquedas Incrementales (Copiado y pegado de biseccion revisar los campos)
+                        {{title}}
                     </div>
                 </h2>
-                <form class="ui large form" method="post" action="/biseccion">
+                <form class="ui large form" method="post" action="/busquedas">
                     <div class="ui stacked segment">
                         <div class="two fields">
-                            <div class="field">
+                            <div class="field" data-tooltip="{{dic['popxo']}}">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" name="Xi" placeholder="{{xi}}">
+                                    <input type="number" step="any" name="Xo" placeholder="{{Xo}}" >
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" name="Xs" placeholder="{{xs}}">
+                                    <input type="number" step="any" name="Delta" placeholder="{{delta}}">
                                 </div>
                             </div>
                         </div>
@@ -58,25 +58,18 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="Tolerancia">
+                                    <input type="number" name="Ite" placeholder="{{iteraciones}}">
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="Iteraciones">
+                                    <input type="text" name="F" placeholder="{{funcion}}">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="F" placeholder="Funcion">
-                                </div>
-                            </div>
-                        </div>
+
 
                         <br>
                         <input type="submit" class="ui green large submit button" value="Correr">
