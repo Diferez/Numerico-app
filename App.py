@@ -1,4 +1,3 @@
-)
 import matplotlib.pyplot as plt
 import numpy as np
 import libs
@@ -236,7 +235,7 @@ def raices_show():
 
 
 #Ruta Raiz
-A
+
 @app.route('/numerico',methods =['GET'])
 def numerico():
     title = traduccion('title')
@@ -247,12 +246,12 @@ def numerico():
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
 
 
-Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raices':'raices',
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2'
           }
-En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raices':'roots',
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2'
@@ -331,7 +330,7 @@ def newton_show():
         plt.plot(xx, np.transpose(yy))
         plt.plot(xx, np.transpose(Dyy))
         plt.axhline(y=0, color='k')
-        plt.axvline(x=0, color='k')
+        #plt.axvline(x=0, color='k')
         plt.suptitle('Iteracion {0}'.format(cont))
         
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
