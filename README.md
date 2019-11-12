@@ -1,12 +1,11 @@
 # Numerico-app
-App móvil para Análisis Numérico
+App para Análisis Numérico
 
 Diego Fernando Martinez Osorio
 
 Sebastian Bustamante Cardona
 
 John Fernando Oquendo
-
 
 
 Biblioteca de parseo
