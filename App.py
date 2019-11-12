@@ -1,4 +1,4 @@
-
+)
 import matplotlib.pyplot as plt
 import numpy as np
 import libs
@@ -143,11 +143,10 @@ def busquedas_show():
         plt.axhline(y=0, color='k')
         plt.axvline(x=0, color='k')
         plt.suptitle('Iteracion {0}'.format(cont))
-        
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
         plt.clf()
         cont = cont + 1
-    
+
     return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir, dic = tradudict() )
     #Completar
     pass
@@ -165,12 +164,85 @@ def min(lista):
             minn = float(x) if minn>float(x) else minn
     return minn
 
+@app.route('/raices',methods =['GET'])
+def raices():
+    Xo = traduccion('Xo')
+    title = traduccion('raices multiples')
+    tol = traduccion('tolerancia')
+    correr = traduccion('correr')
+    iteraciones = traduccion('iteraciones')
+    Df2 = traduccion('df2')
+    Df1 = traduccion('df1')
+    funcion = traduccion('funcion')
+    salir = traduccion('salir')
+    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,funcion = funcion, xo = Xo,df1 = Df1, df2 = Df2, salir=salir)
+
+
+@app.route('/raices',methods =['POST'])
+def raices_post():
+    
+    title = traduccion('raices')
+    Xo = float(request.form.get('Xo'))
+    Tol = float(request.form.get('Tol'))
+    Ite = float(request.form.get('Ite'))
+    f = request.form.get('f')
+    df1 = request.form.get('df1')
+    df2 = request.form.get('df2')
+    #Captura de datos del formulario
+    print(Xo,Tol,Ite,f)
+    datos = [Xo,Tol,Ite,f,df1,df2]
+
+    return redirect(url_for('raices_show', title = title,datos = datos))
+    #Redirecion y envio de datos a la pantalla de muestra
+
+@app.route('/raices/show',methods =['GET'])
+def raices_show():
+    salir = traduccion('salir')
+    title = traduccion('raices')
+    rmhowr = traduccion('bshowr')
+    datos = request.args.getlist('datos', None)  
+    #Traer los datos que se enviaron previamente
+    Xi =float(datos[0])
+    Xs = float(datos[1])
+    Tol = float(datos[2])
+    Ite = float(datos[3])
+    Fo = parse_expr(datos[4].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    #Formateo de los datos
+    r,lista = libs.raices(f,Xo,Ite,Tol,df1,df2)
+    #Ejecucion del metodo
+    Xitemp=Xi
+    Xstemp =Xs
+    anticache = random.randint(1,99999999)
+    for item in lista:
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
+        yy = F(xx)
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.plot(float(item[3]),F(float(item[3])),'k*')
+        plt.plot(xx, np.transpose(yy))
+        plt.axhline(y=0, color='k')
+        plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(item[0]))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
+        plt.clf()
+        # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
+        # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
+        #Creacion de las imagenes para la animacion de la grafica
+
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache)
+
+
 #Ruta Raiz
+A
 @app.route('/numerico',methods =['GET'])
 def numerico():
     title = traduccion('title')
     biseccion = traduccion('biseccion')
     busquedas = traduccion('busquedas')
+    raices = traduccion('raices')
     salir = traduccion('salir')
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
 
@@ -178,12 +250,12 @@ def numerico():
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raices':'raices',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
-          'derivada':'Derivada'
+          'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raices':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
-          'derivada':'Derivative'
+          'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2'
           }
 def traduccion(key):
 
