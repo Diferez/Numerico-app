@@ -148,7 +148,7 @@ def busquedas_show():
         plt.clf()
         cont = cont + 1
     
-    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir)
+    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir, dic = tradudict() )
     #Completar
     pass
 
@@ -175,13 +175,15 @@ def numerico():
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir)
 
 
-Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raices':'raices',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial'
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
+          'derivada':'Derivada'
           }
-En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raices':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point'
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
+          'derivada':'Derivative'
           }
 def traduccion(key):
 
@@ -193,6 +195,79 @@ def traduccion(key):
 
 def tradudict():
     return Es if lang == 'Es' else En
+
+@app.route('/newton',methods =['GET'])
+def newton():
+
+    return render_template('newton.html', title = 'Newton', dic = tradudict())
+
+
+@app.route('/newton',methods =['POST'])
+def newton_post():
+    
+    Xo = float(request.form.get('Xo'))
+    Tol = float(request.form.get('Tol'))
+    
+
+    Ite = float(request.form.get('Ite'))
+    F = request.form.get('F')
+    D = request.form.get('D')
+    print(Xo,Tol,Ite,F,D)
+    datos = [Xo,Tol,Ite,F,D]
+    
+    return redirect(url_for('newton_show', title = 'Newton',datos = datos))
+
+@app.route('/newton/show',methods =['GET'])
+def newton_show():
+
+    datos = request.args.getlist('datos', None)
+    Xo =float(datos[0])
+    Tol = float(datos[1])
+    Ite = float(datos[2])
+    Fo = parse_expr(datos[3].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    if(datos[4]!=""):
+        Do = parse_expr(datos[4].replace('^','**'))
+        x = Symbol('x')
+        D = lambdify(x, Do)
+    else:
+        Do = Fo.diff(x)
+        D = lambdify(x, Do)
+    
+    r,lista = libs.newton(F,D,Xo,Tol,Ite)
+    
+    anticache = random.randint(1,99999999)
+
+
+    # Xi = min(lista)
+    # Xs = max(lista)
+    # Xif = Xi-((Xs-Xi)/4)
+    # Xsf = Xs+((Xs-Xi)/4)
+    Xif = Xo
+    Xsf = r+((r-Xo)/10)
+    cont = 1
+    for item in lista:
+
+        xx = np.linspace(Xif,Xsf, 1000)
+        
+        yy = F(xx)
+        Dyy = D(xx)
+
+        plt.plot(float(item[1]),F(float(item[1])),'k*')
+
+        plt.plot(xx, np.transpose(yy))
+        plt.plot(xx, np.transpose(Dyy))
+        plt.axhline(y=0, color='k')
+        plt.axvline(x=0, color='k')
+        plt.suptitle('Iteracion {0}'.format(cont))
+        
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.clf()
+        cont = cont + 1
+    
+    return render_template('newton_show.html', title = 'Newton', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
+    #Completar
 
 app.run(host= '0.0.0.0', debug=True)
 
