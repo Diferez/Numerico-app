@@ -5,7 +5,7 @@ Diego Fernando Martinez Osorio
 
 Sebastian Bustamante Cardona
 
-John F kennedy
+John Fernando Oquendo
 
 
 
