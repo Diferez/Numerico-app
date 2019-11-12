@@ -247,12 +247,12 @@ def numerico():
 
 
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Salir',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Exit',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2'
           }
@@ -331,7 +331,7 @@ def newton_show():
         plt.plot(xx, np.transpose(Dyy))
         plt.axhline(y=0, color='k')
         #plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(cont))
+        plt.suptitle('Iteracion {0}'.format(item[0]))
         
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
         plt.clf()
