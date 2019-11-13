@@ -970,6 +970,8 @@ def lup_show():
     return render_template('lup_show.html', title = traduccion('lup'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
 
 
+
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion',

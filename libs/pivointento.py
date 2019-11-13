@@ -17,7 +17,7 @@ def main():
 
     # b = np.array([-12, 6, -6, 0])
     b = np.array([1, 1, 1, 1])
-    lu(M,b)
+    luP(M,b)
     #gauss(m,b)
     x= np.array([-1, 0, 3, 4])
     y = np.array([15.5, 3, 8, 1])
@@ -169,7 +169,8 @@ def lu(M,b):
     Ab = Ab.astype(float)
 
     x = np.identity(n) 
-
+    
+    U = np.zeros((n,n))
     if(np.linalg.det(M) == 0):
         print("El sistema no tiene solucion")
     else:
@@ -182,9 +183,13 @@ def lu(M,b):
             for s in range(c + 1, n):
                 multi = Ab[s, c]/Ab[c, c]
                 for i in range(0, n+1):
-                    Ab[s, i] = Ab[s, i] - multi * Ab[c, i]
+                    
                     if(i<n):
+                        Ab[s, i] = Ab[s, i] - multi * Ab[c, i]
+
                         x[s, i] = x[s, i] - multi * x[c, i]
+                    else:
+                        Ab[s, i] = Ab[s, i] - multi * Ab[c, i]
 
             lista.append([np.linalg.inv(np.copy(x)),np.copy(Ab)[:,:-1]])
 
@@ -206,6 +211,7 @@ def lu(M,b):
     return susRegresiva(Ab), lista
 
 def luP(M,b):
+    lista = []
 
     Ab = np.c_[M, b]
     n, columnas = Ab.shape
@@ -237,6 +243,9 @@ def luP(M,b):
                     Ab[s, i] = Ab[s, i] - multi * Ab[c, i]
                     if(i<n):
                         x[s, i] = x[s, i] - multi * x[c, i]
+            
+            lista.append([np.linalg.inv(np.copy(x)),np.copy(Ab)[:,:-1],np.copy(p)])
+        
 
 
             
@@ -257,7 +266,7 @@ def luP(M,b):
     C = np.dot(x,Ab[:,:-1])
     printM(C)
     print("Vector Solucion")
-    print(susRegresiva(Ab))
+    return susRegresiva(Ab), lista
 
 def susRegresiva(A):
     
