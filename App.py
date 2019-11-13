@@ -174,7 +174,7 @@ def raices():
     Df1 = traduccion('df1')
     funcion = traduccion('funcion')
     salir = traduccion('salir')
-    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,funcion = funcion, xo = Xo,df1 = Df1, df2 = Df2, salir=salir)
+    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,dic = tradudict() )
 
 
 @app.route('/raices',methods =['POST'])
@@ -184,12 +184,12 @@ def raices_post():
     Xo = float(request.form.get('Xo'))
     Tol = float(request.form.get('Tol'))
     Ite = float(request.form.get('Ite'))
-    f = request.form.get('f')
+    F = request.form.get('F')
     df1 = request.form.get('df1')
     df2 = request.form.get('df2')
     #Captura de datos del formulario
-    print(Xo,Tol,Ite,f)
-    datos = [Xo,Tol,Ite,f,df1,df2]
+    print(Xo,Tol,Ite,F)
+    datos = [Xo,Tol,Ite,F,df1,df2]
 
     return redirect(url_for('raices_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
@@ -201,37 +201,53 @@ def raices_show():
     rmhowr = traduccion('bshowr')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que se enviaron previamente
-    Xi =float(datos[0])
-    Xs = float(datos[1])
-    Tol = float(datos[2])
-    Ite = float(datos[3])
-    Fo = parse_expr(datos[4].replace('^','**'))
+    Xo =float(datos[0])
+    Tol = float(datos[1])
+    Ite = float(datos[2])
+    Fo = parse_expr(datos[3].replace('^','**'))
+    if(datos[4]!=""):
+        Dfo1 = parse_expr(datos[4].replace('^','**'))
+        x = Symbol('x')
+        df1 = lambdify(x, Dfo1)
+    else:
+        Dfo1 = Fo.diff(x)
+        df1 = lambdify(x, Dfo1)
+    if(datos[5]!=""):
+        Dfo2 = parse_expr(datos[5].replace('^','**'))
+        x = Symbol('x')
+        df2 = lambdify(x, Dfo2)
+    else:
+        Dfo2 = Dfo1.diff(x)
+        df2 = lambdify(x, Dfo2)
+
     x = Symbol('x')
     F = lambdify(x, Fo)
     #Formateo de los datos
-    r,lista = libs.raices(f,Xo,Ite,Tol,df1,df2)
+    r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
     #Ejecucion del metodo
-    Xitemp=Xi
-    Xstemp =Xs
+    Xitemp=Xo
+    Xstemp =r+((r-Xo)/10)
+
+    print (df1)
+    print (df2)
     anticache = random.randint(1,99999999)
     for item in lista:
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
         yy = F(xx)
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
-        plt.plot(float(item[3]),F(float(item[3])),'k*')
-        plt.plot(xx, np.transpose(yy))
+        yy1 = df1(xx)
+        yy2 = df2(xx)
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.plot(xx, np.transpose(yy1),'b')
+        plt.plot(xx, np.transpose(yy2),'r')
         plt.axhline(y=0, color='k')
-        plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
+        #plt.axvline(x=0, color='k')
+        #plt.suptitle('Iteracion {0}'.format(item[0]))
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
         plt.clf()
-        # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
-        # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
-        #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
+    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
 
 
 #Ruta Raiz
