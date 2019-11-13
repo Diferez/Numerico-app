@@ -611,11 +611,6 @@ def jacobi_show():
     lista = libs.jacobi(Mat,bv,xv,Norma,Tol,Ite)
     lar = len(lista[0][1])
     anticache = random.randint(1,99999999)
-
-
-
-
-    
     return render_template('jacobi_show.html', title = 'Jacobi', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar)
     #Completar
 def formatearMatriz(M):
@@ -764,17 +759,93 @@ def lagrange_show():
     anticache = random.randint(1,99999999)
     plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
     plt.clf()
-
-
-
-
-
-
-
     return render_template('lagrange_show.html', title = 'Lagrange', dic = tradudict(), lon = lon, sho = sho, anticache= anticache)
 
-Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
+@app.route('/gaussSimple',methods =['GET'])
+def gaussSimple():
+    return render_template('gaussSimple.html', title = traduccion('gaussSimple'), dic = tradudict())
+
+@app.route('/gaussSimple',methods =['POST'])
+def gaussSimple_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('gaussSimple_show', title = traduccion('gaussSimple'),datos = datos))
+
+
+@app.route('/gaussSimple/show',methods =['GET'])
+def gaussSimple_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.gaussSimple(Mat,bv)
+    
+    lar = len(lista[0][0])-1
+    anticache = random.randint(1,99999999)
+    return render_template('gaussSimple_show.html', title = traduccion('gaussSimple'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+@app.route('/gaussParcial',methods =['GET'])
+def gaussParcial():
+    return render_template('gaussParcial.html', title = traduccion('gaussParcial'), dic = tradudict())
+
+@app.route('/gaussParcial',methods =['POST'])
+def gaussParcial_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('gaussParcial_show', title = traduccion('gaussParcial'),datos = datos))
+
+@app.route('/gaussParcial/show',methods =['GET'])
+def gaussParcial_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.gaussParcial(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])-1
+    anticache = random.randint(1,99999999)
+    return render_template('gaussParcial_show.html', title = traduccion('gaussParcial'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
@@ -787,8 +858,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFsecante' : 'Es una variación del método de Newton-Raphson, en donde se calcula la derivada de la función en el punto de análisis, luego, se aproxima la pendiente a la recta que une la función evaluada en el punto de análisis y en el punto de la iteración anterior.',
           'dFfixepo' : 'El Método de Punto Fijo es un procedimiento iterativo que permite resolver ecuaciones no necesariamente lineales y se usa principalmente para determinar raíces de una función de la forma f(x) = 0, si se cumplen las condiciones de convergencia. Para este caso no es necesario tener un intervalo, su principal objetivo es buscar la raíz de una función partiendo de un valor inicial, una tolerancia y un número de iteraciones.'
           }
-En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
