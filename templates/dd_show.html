@@ -40,7 +40,7 @@
                 {{title}}
             </div>
         </h2>
-        
+        <h4 class="ui dividing header">{{dic['mdd']}}</h4>
         <table class="ui unstackable celled table">
             <thead>
                 <tr>
@@ -52,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for arr in mat %}
+                {% for arr in lista %}
                 <tr>
                     {% for item in arr %}
                     <td>{{item}}</td>
@@ -62,31 +62,22 @@
             </tbody>
         </table>
         
-        <h2 class="ui header">
+        
+
+        <h3 class="ui header">
             <div class="content">
-                {{dic['solucion']}}
+               {{dic['polinomio']}} = {{lon}}
             </div>
-        </h2>
-        <table class="ui unstackable celled table">
-            <thead>
-                <tr>
-                    {% for i in range(lar) %}
-                    <th>X{{i}}</th>
-                    {% endfor %}
+        </h3>
 
-                </tr>
-            </thead>
-            <tbody>
+        <h3 class="ui header">
+            <div class="content">
+                {{dic['polinomio']}} simpl = {{sho}}
+            </div>
+        </h3>
 
-                <tr>
-                    {% for item in sol %}
-                    <td>{{item}}</td>
-                    {% endfor %}
-                </tr>
-
-            </tbody>
-        </table>
-
+        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
+            id="rotator">
         <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
 
 

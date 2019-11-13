@@ -14,3 +14,4 @@ from .pivointento import gauss
 from .pivointento import lu
 from .pivointento import luP
 from .pivointento import vandermonde
+from .dividas import divi

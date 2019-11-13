@@ -43,13 +43,13 @@
 
         <h3 class="ui header">
             <div class="content">
-               Polinomio = {{lon}}
+               {{dic['polinomio']}} = {{lon}}
             </div>
         </h3>
 
         <h3 class="ui header">
             <div class="content">
-               Polinomio simplificado = {{sho}}
+                {{dic['polinomio']}} simpl = {{sho}}
             </div>
         </h3>
         <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"

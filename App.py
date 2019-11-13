@@ -989,7 +989,7 @@ def lup_show():
 
 @app.route('/dd',methods =['GET'])
 def dd():
-    return render_template('dd.html', title = traduccion('X'), dic = tradudict())
+    return render_template('dd.html', title = traduccion('dd'), dic = tradudict())
 
 @app.route('/dd',methods =['POST'])
 def dd_post():
@@ -999,14 +999,13 @@ def dd_post():
 
 
 
-    b = str(request.form.get('B'))
+    y = str(request.form.get('Y'))
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [x,b]
+    yv = formatearVector(y)
+    print(y)
+    datos = [x,y]
     
-    return redirect(url_for('dd_show', title = traduccion('X'),datos = datos))
+    return redirect(url_for('dd_show', title = traduccion('dd'),datos = datos))
 
 
 @app.route('/dd/show',methods =['GET'])
@@ -1016,17 +1015,33 @@ def dd_show():
 
     x =str(datos[0])
     xv = formatearVector(x)
-    b = str(datos[1])
-    bv = formatearVector(b)
+    y = str(datos[1])
+    yv = formatearVector(y)
 
 
 
-    print(xv,bv)
-    lista,lon,sho = libs.divi(Mat,bv)
-    print(r)
-    lar = len(lista[0][0])
+    print(xv,yv)
+    lista,lon,sho = libs.divi(xv,yv)
+    
+    lar = len(lista[0])
     anticache = random.randint(1,99999999)
-    return render_template('dd_show.html', title = traduccion('dd'), lista = mat, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+    x = Symbol('x')
+    F = lambdify(x, sho)
+
+    delta = (np.amax(xv)-np.amin(xv))/4
+    Xi = np.amin(xv)-delta
+    Xs = np.amax(xv)+delta
+    cont = 1
+    xx = np.linspace(Xi,Xs, 1000)
+    yy = F(xx)
+    plt.plot(xx, np.transpose(yy))
+    for i in range(len(xv)):
+        plt.plot(xv[i],yv[i],'r*')
+    anticache = random.randint(1,99999999)
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
+    plt.clf()
+
+    return render_template('dd_show.html', title = traduccion('dd'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sho =sho,lon = lon)
 
 
 
@@ -1061,8 +1076,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFcuadra' :'El método define una función por secciones, en la que cada sección es un polinomio. La función obtenida debe pasar por los puntos dados, debe ser continua y suave. La suavidad está garantizada con la existencia de la primera derivada y la segunda derivada en los puntos de unión.',
           'dFcubi' :'Esta función consiste en una unión de polinomios cúbicos, uno para cada intervalo. La idea central es que, en lugar de usar un solo polinomio para interpolar todos los datos, se pueden usar segmentos de polinomios entre pares de datos de coordenadas y cada uno de ellos correctamente vinculado para ajustarse a los datos.',
           'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
-          'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.',
-          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir'
+          'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
+          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
@@ -1093,8 +1108,8 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFcuadra' :'The method defines a function by sections, in which each section is a polynomial. The function obtained must pass through the given points, it must be continuous and smooth. Smoothness is guaranteed with the existence of the first derivative and the second derivative at the junction points.',
           'dFcubi' :'This function consists of a union of cubic polynomials, one for each interval. The central idea is that, instead of using a single polynomial to interpolate all the data, segments of polynomials between coordinate pairs of data can be used and each one properly linked to fit the data.',
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
-          'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.',
-          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Splain', 'cubi':'Quadratic Splain', 'line':'Linear tracers','abr':'Open'
+          'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
+          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Quadratic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix'
           }
 
 app.run(host= '0.0.0.0', debug=True)
