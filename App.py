@@ -928,9 +928,51 @@ def lu_show():
     return render_template('lu_show.html', title = traduccion('lu'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
 
 
+@app.route('/lup',methods =['GET'])
+def lup():
+    return render_template('lup.html', title = traduccion('lup'), dic = tradudict())
+
+@app.route('/lup',methods =['POST'])
+def lup_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('lup_show', title = traduccion('lu'),datos = datos))
+
+
+@app.route('/lup/show',methods =['GET'])
+def lup_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.luP(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('lup_show.html', title = traduccion('lup'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
           'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
@@ -950,12 +992,12 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization', 'iteracion':'Iteration',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
           'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
           'dBiseccion':'It is a root search algorithm that works by dividing the interval in half and selecting the subinterval that has the root.',
-          'dFincremental':'This method consists in finding an interval that contains at least one root and is based on the intermediate value theorem.\n',
+          'dFincremental':'This method consists in finding an int6erval that contains at least one root and is based on the intermediate value theorem.\n',
           'dFincremental2': '\nIntermediate value theorem: If f is a function it continues in the interval (a, b) and k is any number between f (a) and f (b), then there is a number c in the interval to how (a, b) such that f (c) = k.',
           'dFnewton':'It is a procedure based on the derivative, to find approximations to the roots of a real function of real variable that is derivable.',
           'dFmultroot': 'It solves some problems presented by Newton´s Method, when the derivative of the function tends to zero when evaluated in "x", which implies that convergence decreases or is even suspended if a division by zero. In addition, in the drying method a problem occurs if the function is very flat and f (x) and f (x-1) are approximately equal.',

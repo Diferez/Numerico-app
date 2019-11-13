@@ -93,6 +93,31 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <h2 class="ui header">
+                    <div class="content">
+                        P
+                    </div>
+                </h2>
+            <table class="ui unstackable celled table">
+                    <thead>
+                        <tr>
+                            {% for i in range(lar) %}
+                            <th>X{{i}}</th>
+                            {% endfor %}
+        
+        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for arr in lista[i][2] %}
+                        <tr>
+                            {% for item in arr %}
+                            <td>{{item}}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
         {% endfor %}
         <h2 class="ui header">
             <div class="content">
