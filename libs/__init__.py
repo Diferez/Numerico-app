@@ -20,4 +20,5 @@ from .TrazadoLineal import trazaLinea
 from .TrazadoCubo   import trazaCubo
 
 from .dividas import divi
+from .crout import crout
 

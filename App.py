@@ -1173,6 +1173,45 @@ def dd_show():
     return render_template('dd_show.html', title = traduccion('dd'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sho =sho,lon = lon)
 
 
+@app.route('/crout',methods =['GET'])
+def crout():
+    return render_template('crout.html', title = "Crout", dic = tradudict())
+
+@app.route('/crout',methods =['POST'])
+def crout_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('crout_show', title = 'Crout',datos = datos))
+
+@app.route('/crout/show',methods =['GET'])
+def crout_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    lista = libs.crout(Mat,b)
+    
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('crout_show.html', title = 'Crout', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar)
 
 
 

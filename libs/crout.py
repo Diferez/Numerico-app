@@ -2,7 +2,7 @@ import numpy as np
 
 def crout(A,b):
     
-    A = np.c_[A, b]
+    lista = []
     n, columnas = A.shape
     L = np.zeros((n, n))
     U = np.zeros((n, n))
@@ -18,12 +18,13 @@ def crout(A,b):
             sum1 = sum([L[k, s] * U[s, j] for s in range(0, k)]) 
             U[k, j] = (A[k, j] - sum1) / L[k, k]
 
+        lista.append([np.copy(L),np.copy(U)])
 
 
     print(L)
     print()
     print(U)
-    return L, U
+    return lista
 
 
 if __name__ == "__main__":
