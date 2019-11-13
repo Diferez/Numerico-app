@@ -44,13 +44,13 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xo" placeholder="{{Xo}}">
+                                    <input type="number" step="any" name="Xo" placeholder="{{dic['Xo']}}">
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" step="any" name="F" placeholder="{{f}}">
+                                    <input type="text" step="any" name="F" placeholder="{{dic['funcion']}}">
                                 </div>
                             </div>
                         </div>
@@ -58,13 +58,13 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="text" name="df1" placeholder="{{df1}}">
+                                    <input type="text" name="df1" placeholder="{{dic['df1']}}">
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="number" name="df2" placeholder="{{df2}}">
+                                    <input type="text" name="df2" placeholder="{{dic['df2']}}">
                                 </div>
                             </div>
                         </div>
@@ -73,26 +73,27 @@
                             <div class="field">
                                 <div class="ui left icon input">
                                     <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="{{Tol}}">
+                                    <input type="text" name="Tol" placeholder="{{dic['tolerancia']}}">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui left icon input">
+                                    <i class="user icon"></i>
+                                    <input type="number" name="Ite" placeholder="{{dic['iteraciones']}}">
                                 </div>
                             </div>
                         </div>
-                        <div class="field">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="n" placeholder="{{iteraciones}}">
-                            </div>
-                        </div>
                     </div>
 
 
-                        <br>
-                        <input type="submit" class="ui green large submit button" value="{{correr}}">
-                    </div>
-                </form>
+                    <br>
+                    <input type="submit" class="ui green large submit button" value="{{correr}}">
             </div>
-
+            </form>
         </div>
+
+    </div>
     </div>
 </body>
 
