@@ -14,3 +14,6 @@ from .pivointento import gauss
 from .pivointento import lu
 from .pivointento import luP
 from .pivointento import vandermonde
+from .TrazadoLineal import trazaLinea
+#from .TrazadoCuadra import trazacu
+#from .TrazadoCubo   import trazacub

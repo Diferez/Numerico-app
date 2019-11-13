@@ -252,6 +252,58 @@ def raices_show():
 
 #Ruta Raiz
 
+@app.route('/tlineal',methods =['GET'])
+def tlineal():
+    X = traduccion('X')
+    Y = traduccion('Y')
+    correr = traduccion('correr')
+    salir = traduccion('salir')
+    return render_template('tlineal.html',title = traduccion(''), correr = correr,dic = tradudict() )
+
+
+@app.route('/tlineal',methods =['POST'])
+def tlineal_post():
+    
+    title = traduccion('tlineal')
+    X = float(request.form.get('X'))
+    Y = float(request.form.get('Y'))
+    #Captura de datos del formulario
+    print(X,Y)
+    datos = [X,Y]
+
+    return redirect(url_for('tlineal_show', title = title,datos = datos))
+    #Redirecion y envio de datos a la pantalla de muestra
+
+@app.route('/tlineal/show',methods =['GET'])
+def tlineal_show():
+    salir = traduccion('salir')
+    title = traduccion('tlineal')
+    datos = request.args.getlist('datos', None)  
+    #Traer los datos que  se enviaron previamente
+    X =float(datos[0])
+    Y = float(datos[1])
+
+    #Formateo de los datos
+    r,lista = libs.trazaLinea(X,Y)
+    #Ejecucion del metodo
+    Xitemp = np.amin(X)
+    Xstemp = np.amax(X)
+
+    anticache = random.randint(1,99999999)
+    for item in lista:
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
+        yy = item(xx)
+
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.axhline(y=0, color='k')
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
+        plt.clf()
+
+    return render_template('tlineal_show.html', title = title, lista = lista, tam = len(lista),r = r, salir = salir, anticache=anticache)
+
+
 @app.route('/numerico',methods =['GET'])
 def numerico():
     title = traduccion('title')
