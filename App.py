@@ -250,14 +250,17 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
-          'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios Ej: 1 2 3'
+          'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
+          'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
-          'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces Ex: 1 2 3'
+          'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
+          'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take'
           }
+
 def traduccion(key):
 
 
@@ -573,22 +576,215 @@ def jacobi():
 @app.route('/jacobi',methods =['POST'])
 def jacobi_post():
     
-    Xo = float(request.form.get('Xo'))
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    
+    x = str(request.form.get('X'))
+    xv = formatearVector(x)
+    
+    print(xv)
+
+
     Tol = float(request.form.get('Tol'))
-    M = np.zeros((4,4))
-
-    for i in range(4):
-        for j in range(4):
-            M[i,j]=request.form.get('X{0}{1}'.format(i,j))
-
-    print(M)
     Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
-    G = request.form.get('G')
-    print(Xo,Tol,Ite,F,G)
-    datos = [Xo,Tol,Ite,F,G]
+
+    Norma = float(request.form.get('Norma'))
+
+
+    print(M,b,x,Ite,Tol,Norma)
+    datos = [M,b,x,Ite,Tol,Norma]
     
     return redirect(url_for('jacobi_show', title = 'Jacobi',datos = datos))
+
+
+@app.route('/jacobi/show',methods =['GET'])
+def jacobi_show():
+
+    datos = request.args.getlist('datos', None)
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+    x = str(datos[2])
+    xv = formatearVector(x)
+
+    Ite = float(datos[3])
+
+    Tol = float(datos[4])
+    Norma = float(datos[5])
+
+    print(Mat,bv,xv,Norma,Tol,Ite)
+    lista = libs.jacobi(Mat,bv,xv,Norma,Tol,Ite)
+    lar = len(lista[0][1])
+    anticache = random.randint(1,99999999)
+
+
+
+
+    
+    return render_template('jacobi_show.html', title = 'Jacobi', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar)
+    #Completar
+def formatearMatriz(M):
+    M = M.split(';')
+    for i in range (len(M)):
+        M[i]= M[i].split(' ')
+
+    for i in range(len(M)):
+        for j in range(len(M)):
+            if M[i][j] == '':
+                M[i].remove(M[i][j])
+    
+    Mat = np.zeros((len(M),len(M)))
+
+    for i in range(len(M)):
+        for j in range(len(M)):
+            Mat[i,j]=float(M[i][j])
+    return Mat
+    
+def formatearVector(b):
+    b = b.split(' ')
+    for i in range(len(b)):
+        if b[i] == '':
+                b.remove(b[i])
+    bv = np.zeros(len(b))
+    for i in range(len(b)):
+        bv[i] = float(b[i]) 
+    
+    return bv
+
+
+
+@app.route('/gaussSaidel',methods =['GET'])
+def gaussSaidel():
+    return render_template('gaussSaidel.html', title = 'Gauss Seidel', dic = tradudict())
+
+@app.route('/gaussSaidel',methods =['POST'])
+def gaussSaidel_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    
+    x = str(request.form.get('X'))
+    xv = formatearVector(x)
+    
+    print(xv)
+
+
+    Tol = float(request.form.get('Tol'))
+    Ite = float(request.form.get('Ite'))
+
+    Norma = float(request.form.get('Norma'))
+
+
+    print(M,b,x,Ite,Tol,Norma)
+    datos = [M,b,x,Ite,Tol,Norma]
+    
+    return redirect(url_for('gaussSaidel_show', title = 'GaussSaidel',datos = datos))
+
+
+@app.route('/gaussSaidel/show',methods =['GET'])
+def gaussSaidel_show():
+
+    datos = request.args.getlist('datos', None)
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+    x = str(datos[2])
+    xv = formatearVector(x)
+
+    Ite = float(datos[3])
+
+    Tol = float(datos[4])
+    Norma = float(datos[5])
+
+    print(Mat,bv,xv,Norma,Tol,Ite)
+    r, lista = libs.gausSeidel(Mat,bv,xv,Norma,Tol,Ite)
+    lar = len(lista[0][1])
+    anticache = random.randint(1,99999999)
+    return render_template('gaussSaidel_show.html', title = 'Gauss Saidel', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar)
+
+@app.route('/lagrange',methods =['GET'])
+def lagrange():
+    return render_template('lagrange.html', title = 'Lagrange', dic = tradudict())
+
+@app.route('/lagrange',methods =['POST'])
+def lagrange_post():
+    x = str(request.form.get('X'))
+    
+    xv = formatearVector(x)
+    print(x)
+    
+    y = str(request.form.get('Y'))
+    yv = formatearVector(y)
+    
+    print(yv)
+
+
+    Num = int(request.form.get('Num'))
+
+
+    print(x,y,Num)
+    datos = [x,y,Num]
+    
+    return redirect(url_for('lagrange_show', title = 'Lagreange',datos = datos))
+
+@app.route('/lagrange/show',methods =['GET'])
+def lagrange_show():
+
+    datos = request.args.getlist('datos', None)
+
+    x = str(datos[0])
+    xv = formatearVector(x)
+
+    y = str(datos[1])
+    yv = formatearVector(y)
+    Num = int(float(datos[2]))
+
+    print(x,y,Num)
+
+    lon,sho  = libs.lagrange(xv,yv,Num)
+
+    x = Symbol('x')
+    F = lambdify(x, sho)
+
+
+    
+    
+    delta = (np.amax(xv)-np.amin(xv))/4
+    Xi = np.amin(xv)-delta
+    Xs = np.amax(xv)+delta
+    cont = 1
+    xx = np.linspace(Xi,Xs, 1000)
+    yy = F(xx)
+    plt.plot(xx, np.transpose(yy))
+    for i in range(len(xv)):
+        plt.plot(xv[i],yv[i],'r*')
+    anticache = random.randint(1,99999999)
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
+    plt.clf()
+
+
+
+
+
+
+
+    return render_template('lagrange_show.html', title = 'Lagrange', dic = tradudict(), lon = lon, sho = sho, anticache= anticache)
 
 app.run(host= '0.0.0.0', debug=True)
 

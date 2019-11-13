@@ -53,4 +53,3 @@ if __name__ == "__main__":
     n = 100
     puntofijo(f, g, x, tol, n)
 
-print(f(0),f(1),f(0)*f(1))
