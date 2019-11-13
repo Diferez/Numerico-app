@@ -85,7 +85,7 @@ def biseccion_show():
         # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
         #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache)
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict())
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
@@ -247,7 +247,7 @@ def raices_show():
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
         plt.clf()
 
-    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
+    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
 
 
 #Ruta Raiz
@@ -1039,6 +1039,65 @@ def lup_show():
 
 
 
+@app.route('/dd',methods =['GET'])
+def dd():
+    return render_template('dd.html', title = traduccion('dd'), dic = tradudict())
+
+@app.route('/dd',methods =['POST'])
+def dd_post():
+    
+    x = str(request.form.get('X'))
+    xv = formatearVector(x)
+
+
+
+    y = str(request.form.get('Y'))
+    
+    yv = formatearVector(y)
+    print(y)
+    datos = [x,y]
+    
+    return redirect(url_for('dd_show', title = traduccion('dd'),datos = datos))
+
+
+@app.route('/dd/show',methods =['GET'])
+def dd_show():
+
+    datos = request.args.getlist('datos', None)
+
+    x =str(datos[0])
+    xv = formatearVector(x)
+    y = str(datos[1])
+    yv = formatearVector(y)
+
+
+
+    print(xv,yv)
+    lista,lon,sho = libs.divi(xv,yv)
+    
+    lar = len(lista[0])
+    anticache = random.randint(1,99999999)
+    x = Symbol('x')
+    F = lambdify(x, sho)
+
+    delta = (np.amax(xv)-np.amin(xv))/4
+    Xi = np.amin(xv)-delta
+    Xs = np.amax(xv)+delta
+    cont = 1
+    xx = np.linspace(Xi,Xs, 1000)
+    yy = F(xx)
+    plt.plot(xx, np.transpose(yy))
+    for i in range(len(xv)):
+        plt.plot(xv[i],yv[i],'r*')
+    anticache = random.randint(1,99999999)
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
+    plt.clf()
+
+    return render_template('dd_show.html', title = traduccion('dd'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sho =sho,lon = lon)
+
+
+
+
 
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
@@ -1061,7 +1120,16 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.',
           'dFgausto' : '    La eliminación gaussiana con pivote total es un método directo, que utiliza la eliminación gaussiana para encontrar el valor de sus incógnitas a través de la sustitución regresiva, pero tiene una diferencia en el procedimiento utilizado que se encuentra en el intercambio de filas y columnas, de modo que el elemento pivote sea el valor máximo de cada submatriz obtenido en las operaciones de cada etapa.',
           'dFlus' : 'La factorización de una matriz A en el producto de dos matrices LU por medio de las cuales se obtiene la matriz triangular inferior L colocando los multiplicadores en los lugares indicados por sus índices y en los números diagonales principales 1. La matriz U se obtiene de la matriz resultante del proceso de eliminación al eliminar la columna que corresponde a los términos independientes.',
-          'dFlup' : 'En este método, se debe usar una matriz de permutación P que obtiene la sucesión de intercambios de filas desde una matriz de identidad.'
+          'dFlup' : 'En este método, se debe usar una matriz de permutación P que obtiene la sucesión de intercambios de filas desde una matriz de identidad.',
+          'dFcholes': 'Una matriz cuadrada A con pivotes distintos de cero se puede escribir como el producto de una matriz triangular inferior L y una matriz triangular superior U. Sin embargo, si A es simétrico, factores tales que U es la transposición de L.',
+          'dFcrout':'En el método de Crout, la matriz A se factoriza como A = LU, donde la matriz L es una matriz triangular inferior y U una matriz triangular superior con unidad diagonal.',
+          'dFdividi' :'Fn es una variable discreta de n elementos y Xn es otra variable discreta de n elementos que corresponden, en pares, a la imagen o datos ordenados y abruptos que desea interpolar',
+          'dFdooli' :'El método Doolitle es una variación de Crout que obtiene las matrices de factorización LU fila por fila o columna por columna. Es útil para matrices grandes en las que solo se almacenan elementos distintos de cero fila por fila o columna por columna.',
+          'dFcuadra' :'El método define una función por secciones, en la que cada sección es un polinomio. La función obtenida debe pasar por los puntos dados, debe ser continua y suave. La suavidad está garantizada con la existencia de la primera derivada y la segunda derivada en los puntos de unión.',
+          'dFcubi' :'Esta función consiste en una unión de polinomios cúbicos, uno para cada intervalo. La idea central es que, en lugar de usar un solo polinomio para interpolar todos los datos, se pueden usar segmentos de polinomios entre pares de datos de coordenadas y cada uno de ellos correctamente vinculado para ajustarse a los datos.',
+          'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
+          'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
+          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
@@ -1084,7 +1152,16 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.',
           'dFgausto' : 'Gaussian elimination with total pivoting is a direct method, which uses Gaussian elimination to find the value of its unknowns through regressive substitution, but it has a difference in the procedure used that lies in the exchange of rows and columns, so that the pivot element be the maximun value of each submatrix obtained in the operations of each stage',
           'dFlus' : 'It requires two LU matrices through which the lower triangular matrix L is obtained by placing the multipliers in the places indicated by their indexes and in the main diagonal numbers 1. Matrix U is obtained from the matrix resulting from the elimination process by eliminating the column that corresponds to the independent terms.',
-          'dFlup' : 'In this method, a permutation matrix P must be used which obtains the succession of row exchanges from an identity matrix.'
+          'dFlup' : 'In this method, a permutation matrix P must be used which obtains the succession of row exchanges from an identity matrix.',
+          'dFcholes': 'A square matrix A with non-zero pivots can be written as the product of a lower triangular matrix L and an upper triangular matrix U. However, if A is symmetric, factors such that U is the transpose of L.',
+          'dFcrout':'In Crout´s method the matrix A is factored as A = LU where the matrix L is a lower triangular matrix and U a superior triangular matrix with unit diagonal.',
+          'dFdividi' :'Fn is a discrete variable of n elements and Xn is another discrete variable of n elements that correspond, in pairs, to the ordered and abrupt image or data that you want to interpolate',
+          'dFdooli' :'The Doolitle method is a Crout variation that obtains the LU factorization matrices row by row or column by column. It is useful for large arrays of which only nonzero elements are stored row by row or column by column.',
+          'dFcuadra' :'The method defines a function by sections, in which each section is a polynomial. The function obtained must pass through the given points, it must be continuous and smooth. Smoothness is guaranteed with the existence of the first derivative and the second derivative at the junction points.',
+          'dFcubi' :'This function consists of a union of cubic polynomials, one for each interval. The central idea is that, instead of using a single polynomial to interpolate all the data, segments of polynomials between coordinate pairs of data can be used and each one properly linked to fit the data.',
+          'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
+          'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
+          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Quadratic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix'
           }
 
 app.run(host= '0.0.0.0', debug=True)

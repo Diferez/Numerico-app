@@ -27,7 +27,7 @@
             </a>
             <div class="right menu">
                 <div class="item">
-                    <a href="javascript:history.back()" class="ui red button">{{dic['salir']}}</a>
+                    <a href="javascript:history.back()" class="ui red button">{{salir}}</a>
                 </div>
             </div>
         </div>
@@ -40,6 +40,29 @@
                 {{title}}
             </div>
         </h2>
+        <h4 class="ui dividing header">{{dic['mdd']}}</h4>
+        <table class="ui unstackable celled table">
+            <thead>
+                <tr>
+                    {% for i in range(lar) %}
+                    <th>X{{i}}</th>
+                    {% endfor %}
+                    <th>b</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for arr in lista %}
+                <tr>
+                    {% for item in arr %}
+                    <td>{{item}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        
 
         <h3 class="ui header">
             <div class="content">
@@ -52,6 +75,7 @@
                 {{dic['polinomio']}} simpl = {{sho}}
             </div>
         </h3>
+
         <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
             id="rotator">
         <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
