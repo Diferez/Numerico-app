@@ -85,7 +85,7 @@ def biseccion_show():
         # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
         #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache)
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict())
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
@@ -247,7 +247,7 @@ def raices_show():
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
         plt.clf()
 
-    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
+    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
 
 
 #Ruta Raiz
@@ -1018,7 +1018,7 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFcubi' :'Esta función consiste en una unión de polinomios cúbicos, uno para cada intervalo. La idea central es que, en lugar de usar un solo polinomio para interpolar todos los datos, se pueden usar segmentos de polinomios entre pares de datos de coordenadas y cada uno de ellos correctamente vinculado para ajustarse a los datos.',
           'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.',
-          'dd':'Diferencias Divididas', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales'
+          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
@@ -1050,7 +1050,7 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFcubi' :'This function consists of a union of cubic polynomials, one for each interval. The central idea is that, instead of using a single polynomial to interpolate all the data, segments of polynomials between coordinate pairs of data can be used and each one properly linked to fit the data.',
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.',
-          'dd':'Divided Differences', 'quap':'Quadratic Splain', 'cubi':'Quadratic Splain', 'line':'Linear tracers'
+          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Splain', 'cubi':'Quadratic Splain', 'line':'Linear tracers'
           }
 
 app.run(host= '0.0.0.0', debug=True)
