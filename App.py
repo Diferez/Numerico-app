@@ -29,7 +29,7 @@ def biseccion():
     iteraciones = traduccion('iteraciones')
     funcion = traduccion('funcion')
     salir = traduccion('salir')
-    return render_template('biseccion.html', title = title, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
+    return render_template('biseccion.html', title = title,dic = tradudict, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
 
 
 @app.route('/biseccion',methods =['POST'])
@@ -246,20 +246,7 @@ def numerico():
     return render_template('numerico.html', title = title, biseccion = biseccion, busquedas = busquedas, salir=salir, dic = tradudict())
 
 
-Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
-          'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
-          'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
-          'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar'
-          }
-En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
-          'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
-          'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
-          'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take'
-          }
+
 
 def traduccion(key):
 
@@ -785,6 +772,23 @@ def lagrange_show():
 
 
     return render_template('lagrange_show.html', title = 'Lagrange', dic = tradudict(), lon = lon, sho = sho, anticache= anticache)
+
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
+          'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
+          'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
+          'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
+          'dBiseccion':'1111111111111'
+          }
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
+          'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
+          'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
+          'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
+          'dBiseccion':'sadsadasdasdasdasdasdasdasdasd'
+          }
 
 app.run(host= '0.0.0.0', debug=True)
 
