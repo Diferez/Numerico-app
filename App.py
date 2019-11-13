@@ -174,7 +174,7 @@ def raices():
     Df1 = traduccion('df1')
     funcion = traduccion('funcion')
     salir = traduccion('salir')
-    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,funcion = funcion, xo = Xo,df1 = Df1, df2 = Df2, salir=salir)
+    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,dic = tradudict() )
 
 
 @app.route('/raices',methods =['POST'])
@@ -184,12 +184,12 @@ def raices_post():
     Xo = float(request.form.get('Xo'))
     Tol = float(request.form.get('Tol'))
     Ite = float(request.form.get('Ite'))
-    f = request.form.get('f')
+    F = request.form.get('F')
     df1 = request.form.get('df1')
     df2 = request.form.get('df2')
     #Captura de datos del formulario
-    print(Xo,Tol,Ite,f)
-    datos = [Xo,Tol,Ite,f,df1,df2]
+    print(Xo,Tol,Ite,F)
+    datos = [Xo,Tol,Ite,F,df1,df2]
 
     return redirect(url_for('raices_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
@@ -201,37 +201,53 @@ def raices_show():
     rmhowr = traduccion('bshowr')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que se enviaron previamente
-    Xi =float(datos[0])
-    Xs = float(datos[1])
-    Tol = float(datos[2])
-    Ite = float(datos[3])
-    Fo = parse_expr(datos[4].replace('^','**'))
+    Xo =float(datos[0])
+    Tol = float(datos[1])
+    Ite = float(datos[2])
+    Fo = parse_expr(datos[3].replace('^','**'))
+    if(datos[4]!=""):
+        Dfo1 = parse_expr(datos[4].replace('^','**'))
+        x = Symbol('x')
+        df1 = lambdify(x, Dfo1)
+    else:
+        Dfo1 = Fo.diff(x)
+        df1 = lambdify(x, Dfo1)
+    if(datos[5]!=""):
+        Dfo2 = parse_expr(datos[5].replace('^','**'))
+        x = Symbol('x')
+        df2 = lambdify(x, Dfo2)
+    else:
+        Dfo2 = Dfo1.diff(x)
+        df2 = lambdify(x, Dfo2)
+
     x = Symbol('x')
     F = lambdify(x, Fo)
     #Formateo de los datos
-    r,lista = libs.raices(f,Xo,Ite,Tol,df1,df2)
+    r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
     #Ejecucion del metodo
-    Xitemp=Xi
-    Xstemp =Xs
+    Xitemp=Xo
+    Xstemp =r+((r-Xo)/10)
+
+    print (df1)
+    print (df2)
     anticache = random.randint(1,99999999)
     for item in lista:
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
         yy = F(xx)
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
-        plt.plot(float(item[3]),F(float(item[3])),'k*')
-        plt.plot(xx, np.transpose(yy))
+        yy1 = df1(xx)
+        yy2 = df2(xx)
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.plot(xx, np.transpose(yy1),'b')
+        plt.plot(xx, np.transpose(yy2),'r')
         plt.axhline(y=0, color='k')
-        plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
+        #plt.axvline(x=0, color='k')
+        #plt.suptitle('Iteracion {0}'.format(item[0]))
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
         plt.clf()
-        # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
-        # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
-        #Creacion de las imagenes para la animacion de la grafica
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
+    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache)
 
 
 #Ruta Raiz
@@ -990,7 +1006,10 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFsaidel' : 'Este método es básicamente igual al método de Jacobi, la principal diferencia es que cada valor calculado de xk es usado para recalcular el valor de xk+1por ende converge más rápido a la solución que el método de Jacob',
           'dFlagran' : 'Es un procedimiento para encontrar los valores máximos y mínimos de funciones de múltiples variables sujetas a restricciones. Este método reduce el problema restringido con n variables a uno sin restricciones de n + k variables, donde k es igual al número de restricciones y cuyas ecuaciones se pueden resolver más fácilmente.',
           'dFgaussim' : 'Este método se aplica para resolver sistemas lineales. Consiste en escalonar la matriz aumentada del sistema aumentado para obtener un sistema equivalente.',
-          'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.'
+          'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.',
+          'dFgausto' : '    La eliminación gaussiana con pivote total es un método directo, que utiliza la eliminación gaussiana para encontrar el valor de sus incógnitas a través de la sustitución regresiva, pero tiene una diferencia en el procedimiento utilizado que se encuentra en el intercambio de filas y columnas, de modo que el elemento pivote sea el valor máximo de cada submatriz obtenido en las operaciones de cada etapa.',
+          'dFlus' : 'La factorización de una matriz A en el producto de dos matrices LU por medio de las cuales se obtiene la matriz triangular inferior L colocando los multiplicadores en los lugares indicados por sus índices y en los números diagonales principales 1. La matriz U se obtiene de la matriz resultante del proceso de eliminación al eliminar la columna que corresponde a los términos independientes.',
+          'dFlup' : 'En este método, se debe usar una matriz de permutación P que obtiene la sucesión de intercambios de filas desde una matriz de identidad.'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
@@ -1010,7 +1029,10 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFsaidel' : 'This method is basically the same as the Jacobi method, the main difference is that each calculated value of xk is used to recalculate the value of xk + 1 therefore converges faster to the solution than the Jacob method',
           'dFlagran' : 'It is a procedure to find the maximum and minimum values of functions of multiple variables subject to restrictions. This method reduces the restricted problem with n variables to one without restrictions of n + k variables, where k is equal to the number of restrictions, and whose equations can be solved more easily.',
           'dFgaussim' : 'This method is applied to solve linear systems. It consists of staggering the augmented matrix of the augmented system to obtain an equivalent system.',
-          'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.'
+          'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.',
+          'dFgausto' : 'Gaussian elimination with total pivoting is a direct method, which uses Gaussian elimination to find the value of its unknowns through regressive substitution, but it has a difference in the procedure used that lies in the exchange of rows and columns, so that the pivot element be the maximun value of each submatrix obtained in the operations of each stage',
+          'dFlus' : 'It requires two LU matrices through which the lower triangular matrix L is obtained by placing the multipliers in the places indicated by their indexes and in the main diagonal numbers 1. Matrix U is obtained from the matrix resulting from the elimination process by eliminating the column that corresponds to the independent terms.',
+          'dFlup' : 'In this method, a permutation matrix P must be used which obtains the succession of row exchanges from an identity matrix.'
           }
 
 app.run(host= '0.0.0.0', debug=True)

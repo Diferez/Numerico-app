@@ -4,13 +4,14 @@ def RaizM(f, df1, df2, x0, tol, n):
 
     error = tol + 1
     cont = 0
+    lista=[]
     while ( f(x0) != 0 and cont < n):
 
         x1 = x0 - ((f(x0)*df1(x0))/((df1(x0)**2)-f(x0)*df2(x0)))
         error = abs((x1-x0))
         x0 = x1
         cont += 1
-        print (cont, x0, f(x0), df1(x0), df2(x0), error)
+        lista.append([cont, x0, f(x0), df1(x0), df2(x0), error])
 
     if(f(x0) == 0):
         print(x0, 'es Raiz')
@@ -19,7 +20,7 @@ def RaizM(f, df1, df2, x0, tol, n):
             print(x0, "se aproxima a una raiz con tolerancia", tol)
         else:
             print("Fracaso en ", n, "iteraciones")
-    return x0
+    return x0, lista
 
 
 def f(x):
