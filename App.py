@@ -987,6 +987,50 @@ def lup_show():
 
 
 
+@app.route('/dd',methods =['GET'])
+def dd():
+    return render_template('dd.html', title = traduccion('X'), dic = tradudict())
+
+@app.route('/dd',methods =['POST'])
+def dd_post():
+    
+    x = str(request.form.get('X'))
+    xv = formatearVector(x)
+
+
+
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [x,b]
+    
+    return redirect(url_for('dd_show', title = traduccion('X'),datos = datos))
+
+
+@app.route('/dd/show',methods =['GET'])
+def dd_show():
+
+    datos = request.args.getlist('datos', None)
+
+    x =str(datos[0])
+    xv = formatearVector(x)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(xv,bv)
+    lista,lon,sho = libs.divi(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('dd_show.html', title = traduccion('dd'), lista = mat, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+
+
 
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
