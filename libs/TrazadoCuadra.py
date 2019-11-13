@@ -64,6 +64,9 @@ def trazaCuadra(x):
             j=2
             u+=2
     print(a)
+    polito=[]
+
+    return a, polito
 
     
 if __name__ == "__main__":

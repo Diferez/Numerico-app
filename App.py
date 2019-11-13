@@ -316,6 +316,72 @@ def tlineal_show():
     plt.clf()
     return render_template('tlineal_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
 
+
+@app.route('/tcuadra',methods =['GET'])
+def tcuadra():
+    X = traduccion('X')
+    Y = traduccion('Y')
+    correr = traduccion('correr')
+    salir = traduccion('salir')
+    return render_template('tcuadra.html',title = traduccion('quap'), correr = correr,dic = tradudict() )
+
+
+@app.route('/tcuadra',methods =['POST'])
+def tcuadra_post():
+    
+    title = traduccion('quap')
+    x = (request.form.get('X'))
+    xv = formatearVector(x)
+
+    y = (request.form.get('Y'))
+    yv = formatearVector(y)
+
+    #Captura de datos del formulario
+    #print(X,Y)
+    datos = [x,y]
+
+    return redirect(url_for('tcuadra_show', title = title,datos = datos))
+    #Redirecion y envio de datos a la pantalla de muestra
+
+@app.route('/tcuadra/show',methods =['GET'])
+def tcuadra_show():
+    salir = traduccion('salir')
+    title = traduccion('quap')
+    datos = request.args.getlist('datos', None)  
+    #Traer los datos que  se enviaron previamente
+    x =str(datos[0])
+    xv = formatearVector(x)
+
+    y = str(datos[1])
+    yv = formatearVector(y)
+
+
+    #Formateo de los datos
+    lista,r = libs.trazaCuadra(xv)
+    #Ejecucion del metodo
+    Xitemp = np.amin(xv)
+    Xstemp = np.amax(xv)
+
+    lar = len(lista[0])
+
+    anticache = random.randint(1,99999999)
+    cont=1
+    for item in r:
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
+        x = Symbol('x')
+        F = lambdify(x, item)
+        yy = F(xx)
+
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.axhline(y=0, color='k')
+        
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+    plt.clf()
+    return render_template('tcuadra_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
+
+
 @app.route('/tcubi',methods =['GET'])
 def tcubi():
     X = traduccion('X')
