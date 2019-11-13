@@ -988,7 +988,10 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFsaidel' : 'Este método es básicamente igual al método de Jacobi, la principal diferencia es que cada valor calculado de xk es usado para recalcular el valor de xk+1por ende converge más rápido a la solución que el método de Jacob',
           'dFlagran' : 'Es un procedimiento para encontrar los valores máximos y mínimos de funciones de múltiples variables sujetas a restricciones. Este método reduce el problema restringido con n variables a uno sin restricciones de n + k variables, donde k es igual al número de restricciones y cuyas ecuaciones se pueden resolver más fácilmente.',
           'dFgaussim' : 'Este método se aplica para resolver sistemas lineales. Consiste en escalonar la matriz aumentada del sistema aumentado para obtener un sistema equivalente.',
-          'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.'
+          'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.',
+          'dFgausto' : '    La eliminación gaussiana con pivote total es un método directo, que utiliza la eliminación gaussiana para encontrar el valor de sus incógnitas a través de la sustitución regresiva, pero tiene una diferencia en el procedimiento utilizado que se encuentra en el intercambio de filas y columnas, de modo que el elemento pivote sea el valor máximo de cada submatriz obtenido en las operaciones de cada etapa.',
+          'dFlus' : 'La factorización de una matriz A en el producto de dos matrices LU por medio de las cuales se obtiene la matriz triangular inferior L colocando los multiplicadores en los lugares indicados por sus índices y en los números diagonales principales 1. La matriz U se obtiene de la matriz resultante del proceso de eliminación al eliminar la columna que corresponde a los términos independientes.',
+          'dFlup' : 'En este método, se debe usar una matriz de permutación P que obtiene la sucesión de intercambios de filas desde una matriz de identidad.'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
@@ -1008,7 +1011,10 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFsaidel' : 'This method is basically the same as the Jacobi method, the main difference is that each calculated value of xk is used to recalculate the value of xk + 1 therefore converges faster to the solution than the Jacob method',
           'dFlagran' : 'It is a procedure to find the maximum and minimum values of functions of multiple variables subject to restrictions. This method reduces the restricted problem with n variables to one without restrictions of n + k variables, where k is equal to the number of restrictions, and whose equations can be solved more easily.',
           'dFgaussim' : 'This method is applied to solve linear systems. It consists of staggering the augmented matrix of the augmented system to obtain an equivalent system.',
-          'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.'
+          'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.',
+          'dFgausto' : 'Gaussian elimination with total pivoting is a direct method, which uses Gaussian elimination to find the value of its unknowns through regressive substitution, but it has a difference in the procedure used that lies in the exchange of rows and columns, so that the pivot element be the maximun value of each submatrix obtained in the operations of each stage',
+          'dFlus' : 'It requires two LU matrices through which the lower triangular matrix L is obtained by placing the multipliers in the places indicated by their indexes and in the main diagonal numbers 1. Matrix U is obtained from the matrix resulting from the elimination process by eliminating the column that corresponds to the independent terms.',
+          'dFlup' : 'In this method, a permutation matrix P must be used which obtains the succession of row exchanges from an identity matrix.'
           }
 
 app.run(host= '0.0.0.0', debug=True)
