@@ -860,9 +860,135 @@ def gaussParcial_show():
     return render_template('gaussParcial_show.html', title = traduccion('gaussParcial'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
 
 
+@app.route('/gaussTotal',methods =['GET'])
+def gaussTotal():
+    return render_template('gaussTotal.html', title = traduccion('gaussTotal'), dic = tradudict())
+
+@app.route('/gaussTotal',methods =['POST'])
+def gaussTotal_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('gaussTotal_show', title = traduccion('gaussTotal'),datos = datos))
+
+@app.route('/gaussTotal/show',methods =['GET'])
+def gaussTotal_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.gauss(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])-1
+    anticache = random.randint(1,99999999)
+    return render_template('gaussTotal_show.html', title = traduccion('gaussTotal'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+
+@app.route('/lu',methods =['GET'])
+def lu():
+    return render_template('lu.html', title = traduccion('lu'), dic = tradudict())
+
+@app.route('/lu',methods =['POST'])
+def lu_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('lu_show', title = traduccion('lu'),datos = datos))
+
+
+@app.route('/lu/show',methods =['GET'])
+def lu_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.lu(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('lu_show.html', title = traduccion('lu'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+@app.route('/lup',methods =['GET'])
+def lup():
+    return render_template('lup.html', title = traduccion('lup'), dic = tradudict())
+
+@app.route('/lup',methods =['POST'])
+def lup_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('lup_show', title = traduccion('lu'),datos = datos))
+
+
+@app.route('/lup/show',methods =['GET'])
+def lup_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.luP(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('lup_show.html', title = traduccion('lup'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
           'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
@@ -872,22 +998,33 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFnewton':'Se trata de un procedimiento basado en la derivada, para encontrar aproximaciones a las raíces de una función real de variable real que sea derivable.',
           'dFmultroot' : 'El método de Raíces Múltiples o Newton modificado, se creó con el fin de resolver algunos problemas que presenta el Método de Newton, cuando la derivada de la función tiende a cero al ser evaluada en "x", lo cual implica que la convergencia disminuye o incluso se suspende si se alcanza una división por cero. También, en el Método de la Secante ocurre un problema si la función es muy plana y f(x) y f(x-1) son aproximadamente iguales. Con este fin se creó el Método de las Raíces Múltiples.',
           'dFsecante' : 'Es una variación del método de Newton-Raphson, en donde se calcula la derivada de la función en el punto de análisis, luego, se aproxima la pendiente a la recta que une la función evaluada en el punto de análisis y en el punto de la iteración anterior.',
-          'dFfixepo' : 'El Método de Punto Fijo es un procedimiento iterativo que permite resolver ecuaciones no necesariamente lineales y se usa principalmente para determinar raíces de una función de la forma f(x) = 0, si se cumplen las condiciones de convergencia. Para este caso no es necesario tener un intervalo, su principal objetivo es buscar la raíz de una función partiendo de un valor inicial, una tolerancia y un número de iteraciones.'
+          'dFfixepo' : 'El Método de Punto Fijo es un procedimiento iterativo que permite resolver ecuaciones no necesariamente lineales y se usa principalmente para determinar raíces de una función de la forma f(x) = 0, si se cumplen las condiciones de convergencia. Para este caso no es necesario tener un intervalo, su principal objetivo es buscar la raíz de una función partiendo de un valor inicial, una tolerancia y un número de iteraciones.',
+          'dFfalsa' : 'Este método es una versión mejorada del método de bisección, su principal mejora es unir los puntos extremos del intervalo con una línea recta y la intersección con el eje "x" proporcionará una mejor aproximación de la raíz.',
+          'dFjaco' : 'Este método parte de una aproximación inicial, a partir de esta recalcula los valores de x al despejarla de una ecuación, este proceso se realiza para las n incógnitas x y cada cálculo se realiza con los valores de la aproximación anterior.',
+          'dFsaidel' : 'Este método es básicamente igual al método de Jacobi, la principal diferencia es que cada valor calculado de xk es usado para recalcular el valor de xk+1por ende converge más rápido a la solución que el método de Jacob',
+          'dFlagran' : 'Es un procedimiento para encontrar los valores máximos y mínimos de funciones de múltiples variables sujetas a restricciones. Este método reduce el problema restringido con n variables a uno sin restricciones de n + k variables, donde k es igual al número de restricciones y cuyas ecuaciones se pueden resolver más fácilmente.',
+          'dFgaussim' : 'Este método se aplica para resolver sistemas lineales. Consiste en escalonar la matriz aumentada del sistema aumentado para obtener un sistema equivalente.',
+          'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization', 'iteracion':'Iteration',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
           'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
           'dBiseccion':'It is a root search algorithm that works by dividing the interval in half and selecting the subinterval that has the root.',
-          'dFincremental':'This method consists in finding an interval that contains at least one root and is based on the intermediate value theorem.\n',
+          'dFincremental':'This method consists in finding an int6erval that contains at least one root and is based on the intermediate value theorem.\n',
           'dFincremental2': '\nIntermediate value theorem: If f is a function it continues in the interval (a, b) and k is any number between f (a) and f (b), then there is a number c in the interval to how (a, b) such that f (c) = k.',
           'dFnewton':'It is a procedure based on the derivative, to find approximations to the roots of a real function of real variable that is derivable.',
-          'dFmultroot': 'The modified Multiple Roots is created in order to solve some problems presented by the Newton Method, when the derivative of the function tends to zero when evaluated in "x", which implies that convergence decreases or it is even suspended if a division by zero is reached. Also, in the Secant Method a problem occurs if the function is very flat and f (x) and f (x-1) are approximately equal. To this end, the Multiple Root Method was created.',
+          'dFmultroot': 'It solves some problems presented by Newton´s Method, when the derivative of the function tends to zero when evaluated in "x", which implies that convergence decreases or is even suspended if a division by zero. In addition, in the drying method a problem occurs if the function is very flat and f (x) and f (x-1) are approximately equal.',
           'dFsecante' : 'It is a variation of the Newton-Raphson method, where the derivative of the function at the point of analysis is calculated, then, the slope is approximated to the line that joins the function evaluated at the point of analysis and at the point of the previous iteration',
-          'dFfixepo' : 'The Fixed Point Method is an iterative procedure that allows solving non-determined linear equations and is mainly used to determine roots of a function of the form f (x) = 0, if convergence conditions are established. For this case it is not necessary to have an interval, its main objective is to find the root of a function based on an initial value, a tolerance and a number of iterations.'
-          
+          'dFfixepo' : 'Is an iterative procedure that allows solving non-determined linear equations and is mainly used to determine roots of a function of the form f (x) = 0, if convergence conditions are established. For this case it is not necessary to have an interval, its main objective is to find the root of a function based on an initial value, a tolerance and a number of iterations.',
+          'dFfalsa' : 'This Method is an improved version of the Bisection Method, its main improvement is to join the extreme points of the interval with a straight line and the intersection with the "x" axis will provide a better approximation of the root.',
+          'dFjaco' : 'This method is based on an initial approximation, from this calculation of the values ​​of x when obtained from an equation, this process is performed for the unknowns x and each calculation is performed with the values ​​of the previous approximation',
+          'dFsaidel' : 'This method is basically the same as the Jacobi method, the main difference is that each calculated value of xk is used to recalculate the value of xk + 1 therefore converges faster to the solution than the Jacob method',
+          'dFlagran' : 'It is a procedure to find the maximum and minimum values of functions of multiple variables subject to restrictions. This method reduces the restricted problem with n variables to one without restrictions of n + k variables, where k is equal to the number of restrictions, and whose equations can be solved more easily.',
+          'dFgaussim' : 'This method is applied to solve linear systems. It consists of staggering the augmented matrix of the augmented system to obtain an equivalent system.',
+          'dFgauspar' : 'Partial pivoting is one of the pivoting techniques. It dictates that the pivot element that must be chosen is the largest absolutely in each column.'
           }
 
 app.run(host= '0.0.0.0', debug=True)
