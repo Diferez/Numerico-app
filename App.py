@@ -844,9 +844,93 @@ def gaussParcial_show():
     return render_template('gaussParcial_show.html', title = traduccion('gaussParcial'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
 
 
+@app.route('/gaussTotal',methods =['GET'])
+def gaussTotal():
+    return render_template('gaussTotal.html', title = traduccion('gaussTotal'), dic = tradudict())
+
+@app.route('/gaussTotal',methods =['POST'])
+def gaussTotal_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('gaussTotal_show', title = traduccion('gaussTotal'),datos = datos))
+
+@app.route('/gaussTotal/show',methods =['GET'])
+def gaussTotal_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.gauss(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])-1
+    anticache = random.randint(1,99999999)
+    return render_template('gaussTotal_show.html', title = traduccion('gaussTotal'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
+
+@app.route('/lu',methods =['GET'])
+def lu():
+    return render_template('lu.html', title = traduccion('lu'), dic = tradudict())
+
+@app.route('/lu',methods =['POST'])
+def lu_post():
+    
+    M =str(request.form.get('Matrix'))
+
+    Mat = formatearMatriz(M)
+    print(Mat)
+    print("post")
+    b = str(request.form.get('B'))
+    
+    bv = formatearVector(b)
+    print(b)
+    print(M,b)
+    datos = [M,b]
+    
+    return redirect(url_for('lu_show', title = traduccion('lu'),datos = datos))
+
+
+@app.route('/lu/show',methods =['GET'])
+def lu_show():
+
+    datos = request.args.getlist('datos', None)
+
+    M =str(datos[0])
+    Mat = formatearMatriz(M)
+    b = str(datos[1])
+    bv = formatearVector(b)
+
+
+
+    print(Mat,bv)
+    r,lista = libs.lu(Mat,bv)
+    print(r)
+    lar = len(lista[0][0])
+    anticache = random.randint(1,99999999)
+    return render_template('lu_show.html', title = traduccion('lu'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar,sol=r)
+
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
           'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
@@ -865,8 +949,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFgauspar' : 'El pivoteo parcial es una de las técnicas de pivoteo. Dicta que el elemento pivote que debe escogerse es el mayor absolutamente de cada columna.'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
           'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
