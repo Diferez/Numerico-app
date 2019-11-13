@@ -5,6 +5,9 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
     <!-- Site Properties -->
     <title>{{title}}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"
@@ -37,44 +40,42 @@
                 {{title}}
             </div>
         </h2>
-
-        <table class="ui unstackable very compact table">
+        <table class="ui unstackable celled table">
             <thead>
                 <tr>
-                    <th>X</th>
-                    <th>Y</th>
+                    {% for i in range(lar) %}
+                    <th>X{{i}}</th>
+                    {% endfor %}
+                    
+
                 </tr>
             </thead>
             <tbody>
-                {% for item in lista %}
+                {% for arr in lista %}
                 <tr>
-                    <td>{{item[0]}}</td>
-                    <td>{{item[1]}}</td>
+                    {% for item in arr %}
+                    <td>{{item}}</td>
+                    {% endfor %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
-        <h3>
-               {{r}} {{rmhowr}} {{Tol}}
+        
+        
+        {% for i in range(tam) %}
+        <h3 class="ui header">
+            <div class="content">
+               {{dic['polinomio']}}{{i}} = {{r[i]}}
+            </div>
         </h3>
+        {% endfor %}
 
+    
         <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
             id="rotator">
-        <script type="text/javascript">
-            (function () {
-                var rotator = document.getElementById('rotator'), //get the element
-                    dir = '{{ url_for('static', filename='temp') }}',                              //images folder
-                        delayInSeconds = 1,                           //delay in seconds
-                        num = 1,                                      //start number
-                        len = {{ tam }};                                      //limit
-            setInterval(function () {                           //interval changer
-                anti = {{anticache}};
-                rotator.src = dir + '/'+anti + num + '.png';               //change picture
-                num = (num === len) ? 1 : ++num;              //reset if last image reached
-            }, delayInSeconds * 500);
-            }());
-        </script>
+        <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
+
+
     </div>
 
 </body>
