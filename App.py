@@ -779,7 +779,13 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
           'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
-          'dBiseccion':'1111111111111'
+          'dBiseccion':'Es un algoritmo de búsqueda de raíz que funciona dividiendo el intervalo a la mitad y seleccionando el subintervalo que tiene la raíz.',
+          'dFincremental':'Este método consiste en encontrar un intervalo que contenga al menos una raíz y se basa en el teorema del valor intermedio.\n',
+          'dFincremental2':'\nTeorema del valor intermedio:Si f es una función continúa en el intervalo (a, b) y k es cualquier número entre f (a) y f (b), entonces existe un número c en el intervalo a cómo (a, b) tal que f (c)=k.',
+          'dFnewton':'Se trata de un procedimiento basado en la derivada, para encontrar aproximaciones a las raíces de una función real de variable real que sea derivable.',
+          'dFmultroot' : 'El método de Raíces Múltiples o Newton modificado, se creó con el fin de resolver algunos problemas que presenta el Método de Newton, cuando la derivada de la función tiende a cero al ser evaluada en "x", lo cual implica que la convergencia disminuye o incluso se suspende si se alcanza una división por cero. También, en el Método de la Secante ocurre un problema si la función es muy plana y f(x) y f(x-1) son aproximadamente iguales. Con este fin se creó el Método de las Raíces Múltiples.',
+          'dFsecante' : 'Es una variación del método de Newton-Raphson, en donde se calcula la derivada de la función en el punto de análisis, luego, se aproxima la pendiente a la recta que une la función evaluada en el punto de análisis y en el punto de la iteración anterior.',
+          'dFfixepo' : 'El Método de Punto Fijo es un procedimiento iterativo que permite resolver ecuaciones no necesariamente lineales y se usa principalmente para determinar raíces de una función de la forma f(x) = 0, si se cumplen las condiciones de convergencia. Para este caso no es necesario tener un intervalo, su principal objetivo es buscar la raíz de una función partiendo de un valor inicial, una tolerancia y un número de iteraciones.'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back',
@@ -787,7 +793,14 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
           'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
-          'dBiseccion':'sadsadasdasdasdasdasdasdasdasd'
+          'dBiseccion':'It is a root search algorithm that works by dividing the interval in half and selecting the subinterval that has the root.',
+          'dFincremental':'This method consists in finding an interval that contains at least one root and is based on the intermediate value theorem.\n',
+          'dFincremental2': '\nIntermediate value theorem: If f is a function it continues in the interval (a, b) and k is any number between f (a) and f (b), then there is a number c in the interval to how (a, b) such that f (c) = k.',
+          'dFnewton':'It is a procedure based on the derivative, to find approximations to the roots of a real function of real variable that is derivable.',
+          'dFmultroot': 'The modified Multiple Roots is created in order to solve some problems presented by the Newton Method, when the derivative of the function tends to zero when evaluated in "x", which implies that convergence decreases or it is even suspended if a division by zero is reached. Also, in the Secant Method a problem occurs if the function is very flat and f (x) and f (x-1) are approximately equal. To this end, the Multiple Root Method was created.',
+          'dFsecante' : 'It is a variation of the Newton-Raphson method, where the derivative of the function at the point of analysis is calculated, then, the slope is approximated to the line that joins the function evaluated at the point of analysis and at the point of the previous iteration',
+          'dFfixepo' : 'The Fixed Point Method is an iterative procedure that allows solving non-determined linear equations and is mainly used to determine roots of a function of the form f (x) = 0, if convergence conditions are established. For this case it is not necessary to have an interval, its main objective is to find the root of a function based on an initial value, a tolerance and a number of iterations.'
+          
           }
 
 app.run(host= '0.0.0.0', debug=True)
