@@ -258,18 +258,22 @@ def tlineal():
     Y = traduccion('Y')
     correr = traduccion('correr')
     salir = traduccion('salir')
-    return render_template('tlineal.html',title = traduccion(''), correr = correr,dic = tradudict() )
+    return render_template('tlineal.html',title = traduccion('line'), correr = correr,dic = tradudict() )
 
 
 @app.route('/tlineal',methods =['POST'])
 def tlineal_post():
     
-    title = traduccion('tlineal')
-    X = float(request.form.get('X'))
-    Y = float(request.form.get('Y'))
+    title = traduccion('line')
+    x = (request.form.get('X'))
+    xv = formatearVector(x)
+
+    y = (request.form.get('Y'))
+    yv = formatearVector(y)
+
     #Captura de datos del formulario
-    print(X,Y)
-    datos = [X,Y]
+    #print(X,Y)
+    datos = [x,y]
 
     return redirect(url_for('tlineal_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
@@ -277,31 +281,104 @@ def tlineal_post():
 @app.route('/tlineal/show',methods =['GET'])
 def tlineal_show():
     salir = traduccion('salir')
-    title = traduccion('tlineal')
+    title = traduccion('line')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que  se enviaron previamente
-    X =float(datos[0])
-    Y = float(datos[1])
+    x =str(datos[0])
+    xv = formatearVector(x)
+
+    y = str(datos[1])
+    yv = formatearVector(y)
+
 
     #Formateo de los datos
-    r,lista = libs.trazaLinea(X,Y)
+    lista,r = libs.trazaLinea(xv,yv)
     #Ejecucion del metodo
-    Xitemp = np.amin(X)
-    Xstemp = np.amax(X)
+    Xitemp = np.amin(xv)
+    Xstemp = np.amax(xv)
+
+    lar = len(lista[0])
 
     anticache = random.randint(1,99999999)
-    for item in lista:
+    cont=1
+    for item in r:
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
-        yy = item(xx)
+        x = Symbol('x')
+        F = lambdify(x, item)
+        yy = F(xx)
 
         plt.plot(xx, np.transpose(yy),'g')
         plt.axhline(y=0, color='k')
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
-        plt.clf()
 
-    return render_template('tlineal_show.html', title = title, lista = lista, tam = len(lista),r = r, salir = salir, anticache=anticache)
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+    plt.clf()
+    return render_template('tlineal_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
+
+@app.route('/tcubi',methods =['GET'])
+def tcubi():
+    X = traduccion('X')
+    Y = traduccion('Y')
+    correr = traduccion('correr')
+    salir = traduccion('salir')
+    return render_template('tcubi.html',title = traduccion('cubi'), correr = correr,dic = tradudict() )
+
+
+@app.route('/tcubi',methods =['POST'])
+def tcubi_post():
+    
+    title = traduccion('cubi')
+    x = (request.form.get('X'))
+    xv = formatearVector(x)
+
+    y = (request.form.get('Y'))
+    yv = formatearVector(y)
+
+    #Captura de datos del formulario
+    #print(X,Y)
+    datos = [x,y]
+
+    return redirect(url_for('tcubi_show', title = title,datos = datos))
+    #Redirecion y envio de datos a la pantalla de muestra
+
+@app.route('/tcubi/show',methods =['GET'])
+def tcubi_show():
+    salir = traduccion('salir')
+    title = traduccion('cubi')
+    datos = request.args.getlist('datos', None)  
+    #Traer los datos que  se enviaron previamente
+    x =str(datos[0])
+    xv = formatearVector(x)
+
+    y = str(datos[1])
+    yv = formatearVector(y)
+
+
+    #Formateo de los datos
+    lista,r = libs.trazaCubo(xv,yv)
+    #Ejecucion del metodo
+    Xitemp = np.amin(xv)
+    Xstemp = np.amax(xv)
+
+    lar = len(lista[0])
+
+    anticache = random.randint(1,99999999)
+    cont=1
+    for item in r:
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
+        x = Symbol('x')
+        F = lambdify(x, item)
+        yy = F(xx)
+
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.axhline(y=0, color='k')
+        
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+    plt.clf()
+    return render_template('tcubi_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
 
 
 @app.route('/numerico',methods =['GET'])
@@ -1259,7 +1336,7 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFcubi' :'This function consists of a union of cubic polynomials, one for each interval. The central idea is that, instead of using a single polynomial to interpolate all the data, segments of polynomials between coordinate pairs of data can be used and each one properly linked to fit the data.',
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
-          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Quadratic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix'
+          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix'
           }
 
 app.run(host= '0.0.0.0', debug=True)

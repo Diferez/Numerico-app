@@ -5,9 +5,6 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="-1" />
     <!-- Site Properties -->
     <title>{{title}}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"
@@ -34,50 +31,36 @@
     </div>
 
     <div class="ui main text container">
-
-        <h2 class="ui header">
-            <div class="content">
-                {{title}}
-            </div>
-        </h2>
-        <table class="ui unstackable celled table">
-            <thead>
-                <tr>
-                    {% for i in range(lar) %}
-                    <th>X{{i}}</th>
-                    {% endfor %}
-                    
-
-                </tr>
-            </thead>
-            <tbody>
-                {% for arr in lista %}
-                <tr>
-                    {% for item in arr %}
-                    <td>{{item}}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        
-        {% for i in range(tam) %}
-        <h3 class="ui header">
-            <div class="content">
-               {{dic['polinomio']}}{{i}} = {{r[i]}}
-            </div>
-        </h3>
-        {% endfor %}
-
-    
-        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
-            id="rotator">
-        <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
-
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui header">
+                    <div class="content">
+                        {{title}}
+                    </div>
+                </h2>
+                <form class="ui large form" method="post" action="/tcubi">
+                    <div class="ui stacked segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" step="any" name="X" placeholder="{{dic['X']}}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" step="any" name="Y" placeholder="{{dic['Y']}}">
+                            </div>
+                        </div>               
+                    </div>
+                    <br>
+                    <input type="submit" class="ui green large submit button" value="{{correr}}">
+                </div>
+            </form>
+        </div>
 
     </div>
-
+    </div>
 </body>
 
 </html>

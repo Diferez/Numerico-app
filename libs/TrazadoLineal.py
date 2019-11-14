@@ -48,7 +48,7 @@ def trazaLinea(x,y):
         
     print(a)
     
-    trazalineal(x, y, a)
+    return trazalineal(x, y, a)
 
 def trazalineal(xi,fi,M):
     n = len(xi)
