@@ -12,7 +12,7 @@ from sympy.parsing.sympy_parser import parse_expr
 
 
 
-lang = 'En'
+lang = 'Es'
 #Inicializacion de la App
 app = Flask(__name__, template_folder='templates',static_folder='statics')
 CORS(app)
@@ -1388,7 +1388,16 @@ def lenguaje():
 
 @app.route('/esp',methods =['POST'])
 def esp():
-    pritn("hola")
+    global lang
+    lang = 'Es'
+    return redirect(url_for('numerico', title = traduccion('title')))
+
+@app.route('/eng',methods =['POST'])
+def eng():
+    global lang
+    lang = 'En'
+    return redirect(url_for('numerico', title = traduccion('title')))
+
 
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion', 'graficadora':'Graficadora',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total', 'evaluador':'Evaluador',
@@ -1421,7 +1430,7 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
           'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas',
-          'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar e idioma a Ingles'
+          'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar el idioma a Ingles', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
@@ -1454,7 +1463,7 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
           'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix',
-          'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish'
+          'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)'
           }
 
 app.run(host= '0.0.0.0', debug=True)
