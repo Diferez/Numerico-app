@@ -16,7 +16,7 @@ from .pivointento import luP
 from .pivointento import vandermonde
 
 from .TrazadoLineal import trazaLinea
-#from .TrazadoCuadra import trazacu
+from .TrazadoCuadra import trazaCuadra
 from .TrazadoCubo   import trazaCubo
 
 from .dividas import divi

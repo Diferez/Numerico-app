@@ -2,7 +2,7 @@ import numpy as np
 import math
 import sympy as sym
 
-def trazaCubo(x):
+def trazaCubo(x,y):
     n = (len(x)*3)    
     a = np.zeros((n,n))
     k = len(x)
@@ -99,8 +99,9 @@ def trazaCubo(x):
             j=3
             u+=2
     print(a)
+    return trazacubica(x,y,a)
     
-def trazacubica(xi,yi):
+def trazacubica(xi,yi,M):
     n = len(xi)
     
     # Valores h
@@ -155,6 +156,7 @@ def trazacubica(xi,yi):
     for tramo in range(1,n,1):
         print(' x = ['+str(xi[tramo-1])+','+str(xi[tramo])+']')
         print(str(polinomio[tramo-1]))
+    return M, polinomio
 
 
 if __name__ == "__main__":

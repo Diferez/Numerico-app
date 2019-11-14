@@ -316,6 +316,72 @@ def tlineal_show():
     plt.clf()
     return render_template('tlineal_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
 
+
+@app.route('/tcuadra',methods =['GET'])
+def tcuadra():
+    X = traduccion('X')
+    Y = traduccion('Y')
+    correr = traduccion('correr')
+    salir = traduccion('salir')
+    return render_template('tcuadra.html',title = traduccion('quap'), correr = correr,dic = tradudict() )
+
+
+@app.route('/tcuadra',methods =['POST'])
+def tcuadra_post():
+    
+    title = traduccion('quap')
+    x = (request.form.get('X'))
+    xv = formatearVector(x)
+
+    y = (request.form.get('Y'))
+    yv = formatearVector(y)
+
+    #Captura de datos del formulario
+    #print(X,Y)
+    datos = [x,y]
+
+    return redirect(url_for('tcuadra_show', title = title,datos = datos))
+    #Redirecion y envio de datos a la pantalla de muestra
+
+@app.route('/tcuadra/show',methods =['GET'])
+def tcuadra_show():
+    salir = traduccion('salir')
+    title = traduccion('quap')
+    datos = request.args.getlist('datos', None)  
+    #Traer los datos que  se enviaron previamente
+    x =str(datos[0])
+    xv = formatearVector(x)
+
+    y = str(datos[1])
+    yv = formatearVector(y)
+
+
+    #Formateo de los datos
+    lista,r = libs.trazaCuadra(xv)
+    #Ejecucion del metodo
+    Xitemp = np.amin(xv)
+    Xstemp = np.amax(xv)
+
+    lar = len(lista[0])
+
+    anticache = random.randint(1,99999999)
+    cont=1
+    for item in r:
+
+        xx = np.linspace(Xitemp, Xstemp, 1000)
+        
+        x = Symbol('x')
+        F = lambdify(x, item)
+        yy = F(xx)
+
+        plt.plot(xx, np.transpose(yy),'g')
+        plt.axhline(y=0, color='k')
+        
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+    plt.clf()
+    return render_template('tcuadra_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
+
+
 @app.route('/tcubi',methods =['GET'])
 def tcubi():
     X = traduccion('X')
@@ -1354,7 +1420,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFcubi' :'Esta función consiste en una unión de polinomios cúbicos, uno para cada intervalo. La idea central es que, en lugar de usar un solo polinomio para interpolar todos los datos, se pueden usar segmentos de polinomios entre pares de datos de coordenadas y cada uno de ellos correctamente vinculado para ajustarse a los datos.',
           'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
-          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas'
+          'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas',
+          'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar e idioma a Ingles'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
@@ -1386,7 +1453,8 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFcubi' :'This function consists of a union of cubic polynomials, one for each interval. The central idea is that, instead of using a single polynomial to interpolate all the data, segments of polynomials between coordinate pairs of data can be used and each one properly linked to fit the data.',
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
-          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix'
+          'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix',
+          'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish'
           }
 
 app.run(host= '0.0.0.0', debug=True)
