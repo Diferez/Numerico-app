@@ -1136,10 +1136,69 @@ def crout_show():
     anticache = random.randint(1,99999999)
     return render_template('crout_show.html', title = 'Crout', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(), lar = lar)
 
+@app.route('/fun',methods =['GET'])
+def fun():
+    return render_template('fun.html', title =traduccion('graficadora'), dic = tradudict())
+
+@app.route('/fun',methods =['POST'])
+def fun_post():
+    
+    F =str(request.form.get('F'))
+    Xi = str(request.form.get('Xi'))
+    Xs = str(request.form.get('Xs'))
+    datos = [F,Xi,Xs]
 
 
-Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total',
+    
+    return redirect(url_for('fun_show', title = traduccion('graficadora'),datos = datos))
+
+
+@app.route('/fun/show',methods =['GET'])
+def fun_show():
+
+    datos = request.args.getlist('datos', None)
+
+    Fo = parse_expr(datos[0].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+
+    if(datos[0]=='' or datos[1]==''):
+        Xi = -50
+        Xs = 50
+    else:
+        Xi = float(datos[1])
+        Xs = float(datos[2])
+
+
+    
+    
+    anticache = random.randint(1,99999999)
+
+
+
+
+    xx = np.linspace(Xi,Xs, 1000)
+        
+    yy = F(xx)
+
+
+
+    plt.plot(xx, np.transpose(yy))
+
+    plt.axhline(y=0, color='k')
+    plt.axvline(x=0, color='k')
+    #plt.suptitle('Iteracion {0}'.format(item[0]))
+        
+    plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
+    plt.clf()
+
+    
+    return render_template('fun_show.html', title = traduccion('graficadora'),anticache = anticache, dic = tradudict() )
+    #Completar
+
+
+Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion', 'graficadora':'Graficadora',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total', 'evaluador':'Evaluador',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
@@ -1170,8 +1229,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
           'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas'
           }
-En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution',
-          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian',
+En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
+          'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
           'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization', 'iteracion':'Iteration',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
