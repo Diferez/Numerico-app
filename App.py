@@ -1274,9 +1274,51 @@ def fun_show():
     #Completar
 
 
+
+@app.route('/eva',methods =['GET'])
+def eva():
+    return render_template('eva.html', title =traduccion('evaluador'), dic = tradudict(), eval = False)
+
+@app.route('/eva',methods =['POST'])
+def eva_post():
+    
+    F =str(request.form.get('F'))
+    Fo = parse_expr(F.replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    Xi = float(request.form.get('Xi'))
+    result = F(Xi)
+    datos = [Fo,Xi]
+
+
+    
+    return redirect(url_for('eva_show', title = traduccion('graficadora'),datos = datos))
+
+
+@app.route('/eva/show',methods =['GET'])
+def eva_show():
+
+    datos = request.args.getlist('datos', None)
+
+    Fo = parse_expr(datos[0].replace('^','**'))
+    x = Symbol('x')
+    F = lambdify(x, Fo)
+    Xi = float(datos[1])
+    result = F(Xi)
+
+
+
+    
+    
+    anticache = random.randint(1,99999999)
+
+    
+    return render_template('eva_show.html', title = traduccion('evaluador'),anticache = anticache, dic = tradudict(),result = result )
+    #Completar
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion', 'graficadora':'Graficadora',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total', 'evaluador':'Evaluador',
-          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion',
+          'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion','idioma':'Idioma',
           'derivada':'Derivada', 'raices':'Raices Multiples','df1':'df1','df2':'df2', 'reglaFalsa':'Regla Falsa', 'secante':'Secante', 
           'puntoFijo':'Punto Fijo', 'G':'Funcion G(x)','popm':'Separados por espacios y ; Ej: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Datos de la Matriz',
           'B':'Vector b', 'popv':'Separados por espacios Ej: 1 2 3' , 'X':'Vector x','norma':'Norma', 'Y':'Vector y', 'lv':'Valores a tomar',
@@ -1308,7 +1350,7 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
-          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization', 'iteracion':'Iteration',
+          'bshowr':'approaches the root with a tolerance of', 'Xo':'Xo', 'delta':'Delta', 'popxo':'Initial point', 'lu':'LU Factorization', 'lup':'LUP Factorization', 'iteracion':'Iteration','idioma':'Languaje',
           'derivada':'Derivative','raices':'Multiple Roots','df1':'df1','df2':'df2', 'reglaFalsa':'False Rule','secante':'Secant',
           'puntoFijo':'Fixed Point','G':'Function G(x)', 'popm':'Separated by spaces and ; Ex: 1 2 3; 4 5 6; 7 8 9', 'matrixdata':'Matrix Data',
           'B':'Vector b', 'popv':'Separated by spaces Ej: 1 2 3', 'X':'Vector x', 'norma':'Norma', 'Y':'Vector y', 'lv':'Values to take',
