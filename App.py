@@ -1316,6 +1316,14 @@ def eva_show():
     return render_template('eva_show.html', title = traduccion('evaluador'),anticache = anticache, dic = tradudict(),result = result )
     #Completar
 
+@app.route('/lenguaje',methods =['GET'])
+def lenguaje():
+    return render_template('lenguaje.html', title =traduccion('idioma'), dic = tradudict(), eval = False)
+
+@app.route('/esp',methods =['POST'])
+def esp():
+    pritn("hola")
+
 Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección", 'busquedas':"Búsquedas Incrementales", 'raicesI':'raices','gaussSimple':'Gaussiana Simple','solucion':'Solucion', 'graficadora':'Graficadora',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerancia', 'iteraciones':'Iteraciones','funcion':'Función', 'salir':'Atras', 'gaussParcial':'Gaussiana Parcial', 'gaussTotal':'Gaussiana Total', 'evaluador':'Evaluador',
           'bshowr':'se aproxima a una raiz con tolerancia de', 'Xo':'Xo','delta':'Delta', 'popxo':'Punto inicial','lu':'Factorizacion LU', 'lup':'Factorizacion LUP', 'iteracion':'Iteracion','idioma':'Idioma',
