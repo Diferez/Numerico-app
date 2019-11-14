@@ -27,7 +27,7 @@
             </a>
             <div class="right menu">
                 <div class="item">
-                    <a href="javascript:history.back()" class="ui red button">{{salir}}</a>
+                    <a href="javascript:history.back()" class="ui red button">{{dic['salir']}}</a>
                 </div>
             </div>
         </div>
@@ -40,7 +40,14 @@
                 {{title}}
             </div>
         </h2>
-        <h4 class="ui dividing header">{{dic['mdd']}}</h4>
+
+        {% for i in range(tam)%}
+        <h4 class="ui dividing header">{{dic['iteracion']}} {{i+1}}</h4>
+        <h2 class="ui header">
+                <div class="content">
+                    L
+                </div>
+            </h2>
         <table class="ui unstackable celled table">
             <thead>
                 <tr>
@@ -52,7 +59,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for arr in lista %}
+                {% for arr in lista[i][0] %}
                 <tr>
                     {% for item in arr %}
                     <td>{{item}}</td>
@@ -61,23 +68,34 @@
                 {% endfor %}
             </tbody>
         </table>
+        <h2 class="ui header">
+                <div class="content">
+                    U
+                </div>
+            </h2>
+        <table class="ui unstackable celled table">
+                <thead>
+                    <tr>
+                        {% for i in range(lar) %}
+                        <th>X{{i}}</th>
+                        {% endfor %}
+    
+    
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for arr in lista[i][1] %}
+                    <tr>
+                        {% for item in arr %}
+                        <td>{{item}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
         
-        
 
-        <h3 class="ui header">
-            <div class="content">
-               {{dic['polinomio']}} = {{lon}}
-            </div>
-        </h3>
-
-        <h3 class="ui header">
-            <div class="content">
-                {{dic['polinomio']}} simpl = {{sho}}
-            </div>
-        </h3>
-
-        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
-            id="rotator">
         <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
 
 
