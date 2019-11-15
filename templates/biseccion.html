@@ -14,21 +14,33 @@
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"
         integrity="sha256-Bhi6GMQ/72uYZcJXCJ2LToOIcN3+Cx47AZnq/Bw1f7A=" crossorigin="anonymous"></script>
+
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/numscript.js') }}"></script> -->
 </head>
 
 <body>
+
     <div class="ui fixed inverted menu">
         <div class="ui container">
             <a href="/numerico" class="header item">
                 {{title}}
             </a>
             <div class="right menu">
+
+                <div class="item">
+                    <a href="https://sites.google.com/site/sejhodi/entregas/Practica-Final/primera-entrega/biseccion"
+                        class="ui button">{{dic['info']}}</a>
+                </div>
+
                 <div class="item">
                     <a href="javascript:history.back()" class="ui red button">{{dic['salir']}}</a>
                 </div>
+
+
             </div>
         </div>
     </div>
+
 
     <div class="ui main text container">
         <div class="ui middle aligned center aligned grid">
@@ -38,48 +50,37 @@
                         {{title}}
                     </div>
                 </h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="ui negative message">
+                    <i class="close icon"></i>
+                    <div class="header">
+                        {{message[1]}}
+                    </div>
+                    <p>
+                    </p>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
                 <form class="ui large form" method="post" action="/biseccion">
                     <div class="ui stacked segment">
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xi" placeholder="{{xi}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xs" placeholder="{{xs}}">
-                                </div>
-                            </div>
+                            {% include 'base/Xi.html' %}
+                            {% include 'base/Xs.html' %}
                         </div>
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="{{tolerancia}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="{{iteraciones}}">
-                                </div>
-                            </div>
-                        </div>
+                            {% include 'base/Tol.html' %}
+                            {% include 'base/Ite.html' %}
 
+                        </div>
                         <div class="two fields">
-                            <div class="field" data-tooltip="{{dic['popf']}}" >
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="F" placeholder="{{funcion}}">
-                                </div>
-                            </div>
+                            {% include 'base/F.html' %}
                         </div>
 
                         <br>
-                        <input type="submit" class="ui green large submit button" value="{{correr}}">
+                        <input type="submit" class="ui green large submit button" value="{{dic['correr']}}">
                     </div>
                 </form>
             </div>

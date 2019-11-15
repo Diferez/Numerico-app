@@ -31,29 +31,37 @@
     </div>
 
     <div class="ui main text container">
-        <div class="ui middle aligned center aligned grid">
-            <div class="column">
-                <h2 class="ui header">
-                    <div class="content">
-                        {{title}}
-                    </div>
-                </h2>
-                <form class="ui large form" method="post" action="/crout">
-                    <div class="ui stacked segment">
 
-
-                        {% include 'base/M.html' %}
-
-                        {% include 'base/B.html' %}
-
-                        <br>
-                        <input type="submit" class="ui green large submit button" value="Correr">
-                    </div>
-                </form>
+        <h2 class="ui header">
+            <div class="content">
+                {{title}}
             </div>
+        </h2>
 
+        
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="ui negative message">
+            <i class="close icon"></i>
+            <div class="header">
+                {{message[1]}}
+            </div>
+            <p>
+            </p>
         </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600"
+            height="600" id="rotator">
+
+
+
     </div>
+
 </body>
 
 </html>

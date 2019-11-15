@@ -37,7 +37,28 @@
                 {{title}}
             </div>
         </h2>
+        {% if messages %}
+        
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="ui negative message">
+            <i class="close icon"></i>
+            <div class="header">
+                {{message[1]}}
+            </div>
+            <p>
+            </p>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600"
+            height="600" id="rotator">
+        
+        {%else%}
         <table class="ui unstackable very compact table">
             <thead>
                 <tr>
@@ -64,11 +85,11 @@
         </table>
         <!-- <img class="ui centered image" src="{{ url_for('static', filename='temp/funcion.png') }}"> -->
         <h3>
-               {{r}} {{bshowr}} {{Tol}}
+            {{r}} {{bshowr}} {{Tol}}
         </h3>
 
-        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600" height="600"
-            id="rotator">
+        <img src="{{ url_for('static', filename='temp/{0}1.png'.format(anticache)) }}" alt="rotating image" width="600"
+            height="600" id="rotator">
         <script type="text/javascript">
             (function () {
                 var rotator = document.getElementById('rotator'), //get the element
@@ -77,12 +98,17 @@
                         num = 1,                                      //start number
                         len = {{ tam }};                                      //limit
             setInterval(function () {                           //interval changer
-                anti = {{anticache}};
-                rotator.src = dir + '/'+anti + num + '.png';               //change picture
-                num = (num === len) ? 1 : ++num;              //reset if last image reached
+                anti = {{ anticache }};
+            rotator.src = dir + '/' + anti + num + '.png';               //change picture
+            num = (num === len) ? 1 : ++num;              //reset if last image reached
             }, delayInSeconds * 500);
             }());
         </script>
+       
+
+       {%endif%}
+
+
     </div>
 
 </body>
