@@ -100,6 +100,10 @@ def biseccion_show():
     except:
         corrio = False
         flash("Intervalo Invalido, no existe raiz")
+
+    if (F(Xi).imag!=0 or F(Xs).imag!=0):
+        corrio = False    
+        flash("Valor inicial invalido F(Xo) no esta definido")
     #Ejecucion del metodo
     Xitemp=Xi
     Xstemp =Xs
@@ -153,7 +157,7 @@ def busquedas_post():
         Delta = float(request.form.get('Delta'))
         Ite = float(request.form.get('Ite'))
         F = request.form.get('F')
-        Fo = parse_expr(datos[3].replace('^','**'))
+        Fo = parse_expr(F)
         x = Symbol('x')
         Fo = lambdify(x, Fo)
     except:
@@ -174,7 +178,7 @@ def busquedas_post():
         flash("Las iteraciones no pueden ser negativas")
 
     if(error):
-        return render_template('biseccion.html', traduccion('busquedas'),dic = tradudict())
+        return render_template('busquedas.html', title= traduccion('busquedas'),dic = tradudict())
 
     
     print(Xo,Delta,Ite,F)
@@ -195,10 +199,17 @@ def busquedas_show():
     try:
         r,lista = libs.busquedasincrementales(F,Xo,Delta,Ite)
         corrio = True
-    except AssertionError:
+    except:
         corrio = False
-        flash(AssertionError)
+        flash("Intervalo Invalido, no existe raiz")
 
+    if (len(lista)==0):
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz")
+    if (F(Xo).imag!=0):
+        corrio = False    
+        flash("Valor inicial invalido F(Xo) no esta definido")
+    print(r,lista)
     anticache = random.randint(1,99999999)
 
 
@@ -223,6 +234,8 @@ def busquedas_show():
             plt.clf()
             cont = cont + 1
     else:
+        Xif = Xi
+        Xsf = Xi + Delta*Ite
         xx = np.linspace(Xif,Xsf, 1000)
         yy = F(xx)
         plt.plot(Xi,F(Xi),'k*')
@@ -233,9 +246,9 @@ def busquedas_show():
         plt.suptitle('Funcion'.format(cont))
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        
+        return  render_template('error.html', title =traduccion('busquedas'), anticache=anticache,dic = tradudict())
 
-    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir, dic = tradudict(),corrio = corrio)
+    return render_template('busquedas_show.html', title =traduccion('busquedas'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict(),corrio = corrio)
     #Completar
     pass
 
@@ -254,15 +267,6 @@ def min(lista):
 
 @app.route('/raices',methods =['GET'])
 def raices():
-    Xo = traduccion('Xo')
-    title = traduccion('raices')
-    tol = traduccion('tolerancia')
-    correr = traduccion('correr')
-    iteraciones = traduccion('iteraciones')
-    Df2 = traduccion('df2')
-    Df1 = traduccion('df1')
-    funcion = traduccion('funcion')
-    salir = traduccion('salir')
     return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,dic = tradudict() )
 
 
@@ -566,14 +570,35 @@ def newton():
 
 @app.route('/newton',methods =['POST'])
 def newton_post():
+    error = False
+    try:
+        Xo = float(request.form.get('Xo'))
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+        D = request.form.get('D')
+        Fo = parse_expr(F)
+        x = Symbol('x')
+        Fo = lambdify(x, Fo)
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('newton.html', title = 'Newton',dic = tradudict())
     
-    Xo = float(request.form.get('Xo'))
-    Tol = float(request.form.get('Tol'))
+    if(Tol<=0):
+        error = True
+        flash("La tolerancia no puede ser negativa")
     
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
+    
+    
+    
+    if(error):
+        return render_template('newton.html', title = 'Newton',dic = tradudict())
 
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
-    D = request.form.get('D')
+    
     print(Xo,Tol,Ite,F,D)
     datos = [Xo,Tol,Ite,F,D]
     
@@ -597,8 +622,24 @@ def newton_show():
         Do = Fo.diff(x)
         D = lambdify(x, Do)
     
-    r,lista = libs.newton(F,D,Xo,Tol,Ite)
+    D2o = Do.diff(x)
+    D2 = lambdify(x, D2o)
     
+    corrio = True
+    
+    if((F(Xo)*D2(Xo))<0):
+        corrio = False    
+        flash('Valor inicial Invalido')
+    
+    if (F(Xo).imag!=0):
+        corrio = False    
+        flash("Valor inicial invalido F(Xo) no esta definido")
+    else:
+        try:
+            r,lista = libs.newton(F,D,Xo,Tol,Ite)
+        except:
+            corrio = False
+            flash("Intervalo Invalido, no existe raiz")
     anticache = random.randint(1,99999999)
 
 
@@ -606,27 +647,45 @@ def newton_show():
     # Xs = max(lista)
     # Xif = Xi-((Xs-Xi)/4)
     # Xsf = Xs+((Xs-Xi)/4)
-    Xif = Xo
-    Xsf = r+((r-Xo)/10)
-    cont = 1
-    for item in lista:
+    if corrio:
+        Xif = Xo
+        Xsf = r+((r-Xo)/10)
+        cont = 1
+        for item in lista:
 
-        xx = np.linspace(Xif,Xsf, 1000)
-        
+            xx = np.linspace(Xif,Xsf, 1000)
+            
+            yy = F(xx)
+            Dyy = D(xx)
+
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+
+            plt.plot(xx, np.transpose(yy))
+            plt.plot(xx, np.transpose(Dyy))
+            plt.axhline(y=0, color='k')
+            #plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(item[0]))
+            
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+            plt.clf()
+            cont = cont + 1
+    else:
+        Xi = Xo-abs(Xo/4)
+        Xs = 10
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
-        Dyy = D(xx)
-
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        #plt.plot(Xi,F(Xi),'k*')
 
         plt.plot(xx, np.transpose(yy))
-        plt.plot(xx, np.transpose(Dyy))
         plt.axhline(y=0, color='k')
-        #plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
-        
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.axvline(x=0, color='k')
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        cont = cont + 1
+        return  render_template('error.html', title = 'Newton', anticache=anticache,dic = tradudict())
     
     return render_template('newton_show.html', title = 'Newton', lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
     #Completar
