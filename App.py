@@ -47,8 +47,10 @@ def biseccion_post():
         Tol = float(request.form.get('Tol'))
         Ite = float(request.form.get('Ite'))
         F = request.form.get('F')
-    except E:
-        print(E)
+        Fo = request.form.get('F').replace('^','**')
+        x = Symbol('x')
+        Fo = lambdify(x, Fo)
+    except:
         error = True
         flash("Error al leer los datos, por favor comprobarlos")
         return render_template('biseccion.html', title = title,dic = tradudict())
@@ -1502,7 +1504,7 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
           'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas',
           'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar el idioma a Ingles', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)',
-          'info' : 'Información', 'popxi':'Punto Inferior(Debe ser menor a Xs)', 'popxs':'Punto Superior(Debe ser mayor a Xs)','poptol':'La Tolerancia debe ser mayor que 0', 'popite':'Las Iteraciones deben ser mayor que 0','popdel':'Delta debe ser mayor que 0'
+          'info' : 'Información', 'popxi':'Punto Inferior(Debe ser menor a Xs)', 'popxs':'Punto Superior(Debe ser mayor a Xi)','poptol':'La Tolerancia debe ser mayor que 0', 'popite':'Las Iteraciones deben ser mayor que 0','popdel':'Delta debe ser mayor que 0'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
@@ -1536,7 +1538,7 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
           'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix',
           'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)',
-          'info':'Information', 'popxi':'Inferior Point(Must be less than Xs)','popxs': 'Superior Point(Must be higher than Xs)', 'poptol':'Tolerance must be higher than 0', 'popite':'Iterations must be higher than 0', 'popdel':'Delta must be higher than 0'
+          'info':'Information', 'popxi':'Inferior Point(Must be less than Xs)','popxs': 'Superior Point(Must be higher than Xi)', 'poptol':'Tolerance must be higher than 0', 'popite':'Iterations must be higher than 0', 'popdel':'Delta must be higher than 0'
           }
 
 app.run(host= '0.0.0.0', debug=True)
