@@ -50,20 +50,9 @@
                         {{title}}
                     </div>
                 </h2>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for message in messages %}
-                <div class="ui negative message">
-                    <i class="close icon"></i>
-                    <div class="header">
-                        {{message[1]}}
-                    </div>
-                    <p>
-                    </p>
-                </div>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
+                
+                {% include 'base/error.html' %}
+
                 <form class="ui large form" method="post" action="/biseccion">
                     <div class="ui stacked segment">
                         <div class="two fields">
