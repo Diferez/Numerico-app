@@ -395,7 +395,7 @@ def raices_show():
     return render_template('raices_show.html', title = traduccion('raices'), lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
 
 
-#Ruta Raiz
+#Splines 
 
 @app.route('/tlineal',methods =['GET'])
 def tlineal():
@@ -422,6 +422,10 @@ def tlineal_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+    
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
         return render_template('tlineal.html', title = title,dic = tradudict())
     
     return redirect(url_for('tlineal_show', title = title,datos = datos))
@@ -491,8 +495,22 @@ def tcuadra_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
-        return render_template('tlineal.html', title = title,dic = tradudict())
+        return render_template('tcuadra.html', title = title,dic = tradudict())
     
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
+        return render_template('tcuadra.html', title = title,dic = tradudict())
+    
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('tcuadra.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if(xv[i]==xv[j]):
+                flash("Error no es funcion dos valores de y en uno de x")
+                return render_template('tcuadra.html', title = title,dic = tradudict())
+
     return redirect(url_for('tcuadra_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -525,6 +543,7 @@ def tcuadra_show():
         
         x = Symbol('x')
         F = lambdify(x, item)
+        print(F)
         yy = F(xx)
 
         plt.plot(xx, np.transpose(yy),'g')
@@ -560,8 +579,22 @@ def tcubi_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
-        return render_template('tlineal.html', title = title,dic = tradudict())
+        return render_template('tcubi.html', title = title,dic = tradudict())
     
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('tcubi.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if(xv[i]==xv[j]):
+                flash("Error no es funcion dos valores de y en uno de x")
+                return render_template('tcubi.html', title = title,dic = tradudict())
+
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+
     return redirect(url_for('tcubi_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
