@@ -140,34 +140,50 @@ def biseccion_show():
 
     return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict(), corrio= corrio)
 
+
+####################################################################################################################################################################################
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
-    salir = traduccion('salir')
-    title = traduccion('busquedas')
-    Xo = traduccion('Xo')
-    delta = traduccion('delta')
-    iteraciones = traduccion('iteraciones')
-    tolerancia = traduccion('tolerancia')
-    funcion = traduccion('funcion')
-    return render_template('busquedas.html', title = title, Xo = Xo, delta = delta, iteraciones = iteraciones, funcion = funcion, salir = salir, dic = tradudict())
+    return render_template('busquedas.html', title = traduccion('busquedas'), dic = tradudict())
 
 @app.route('/busquedas',methods =['POST'])
 def busquedas_post():
-    title = traduccion('busquedas')
-    Xo = float(request.form.get('Xo'))
-    Delta = float(request.form.get('Delta'))
+    try:
+        Xo = float(request.form.get('Xo'))
+        Delta = float(request.form.get('Delta'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+        Fo = parse_expr(datos[3].replace('^','**'))
+        x = Symbol('x')
+        Fo = lambdify(x, Fo)
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('busquedas.html', title = traduccion('busquedas'),dic = tradudict())
+    
+    error = False
 
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
+
+    
+    if(Delta<=0):
+        error = True    
+        flash("Delta debe ser mayor que 0")
+    
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
+
+    if(error):
+        return render_template('biseccion.html', traduccion('busquedas'),dic = tradudict())
+
+    
     print(Xo,Delta,Ite,F)
     datos = [Xo,Delta,Ite,F]
     
-    return redirect(url_for('busquedas_show', title = title,datos = datos))
+    return redirect(url_for('busquedas_show', title = traduccion('busquedas'),datos = datos))
 
 @app.route('/busquedas/show',methods =['GET'])
 def busquedas_show():
-    salir = traduccion('salir')
-    title = traduccion('busquedas')
     datos = request.args.getlist('datos', None)
     Xo =float(datos[0])
     Delta = float(datos[1])
