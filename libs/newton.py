@@ -29,6 +29,8 @@ def newton(f, df, x0, tol, n):
     return x0, lista
 
 
+
+
 def f(x):
     #funcion
     rota = math.log(math.sin(x)**2 + 1) - (1/2)

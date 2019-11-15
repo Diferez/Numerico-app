@@ -26,21 +26,11 @@ CORS(app)
 
 @app.route('/biseccion',methods =['GET'])
 def biseccion():
-    Xi = traduccion('Xi')
-    Xs = traduccion('Xs')
-    title = traduccion('biseccion')
-    tolerancia = traduccion('tolerancia')
-    correr = traduccion('correr')
-    iteraciones = traduccion('iteraciones')
-    funcion = traduccion('funcion')
-    salir = traduccion('salir')
-    return render_template('biseccion.html', title = title,dic = tradudict(), correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
+    return render_template('biseccion.html', title = traduccion('biseccion'),dic = tradudict())
 
 
 @app.route('/biseccion',methods =['POST'])
 def biseccion_post():
-    
-    title = traduccion('biseccion')
     try:
         Xi = float(request.form.get('Xi'))
         Xs = float(request.form.get('Xs'))
@@ -53,7 +43,7 @@ def biseccion_post():
     except:
         error = True
         flash("Error al leer los datos, por favor comprobarlos")
-        return render_template('biseccion.html', title = title,dic = tradudict())
+        return render_template('biseccion.html', title = traduccion('biseccion'),dic = tradudict())
     
 
     error = False
@@ -71,18 +61,18 @@ def biseccion_post():
     
     
     if(error):
-        return render_template('biseccion.html', title = title,dic = tradudict())
+        return render_template('biseccion.html',title = traduccion('biseccion'),dic = tradudict())
 
     print(Xi,Xs,Tol,Ite,F)
     datos = [Xi,Xs,Tol,Ite,F]
 
-    return redirect(url_for('biseccion_show', title = title,datos = datos))
+    return redirect(url_for('biseccion_show', title = traduccion('biseccion'),datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
 @app.route('/biseccion/show',methods =['GET'])
 def biseccion_show():
     salir = traduccion('salir')
-    title = traduccion('biseccion')
+
     bshowr = traduccion('bshowr')
     datos = request.args.getlist('datos', None)  
     #Traer los datos que se enviaron previamente
@@ -94,16 +84,18 @@ def biseccion_show():
     x = Symbol('x')
     F = lambdify(x, Fo)
     #Formateo de los datos
+
     try:
         r,lista = libs.biseccion(F,Xi,Xs,Ite,Tol)
         corrio = True
+        if (F(Xi).imag!=0 or F(Xs).imag!=0):
+            corrio = False    
+            flash("Valor inicial invalido F(Xo) no esta definido")
     except:
         corrio = False
         flash("Intervalo Invalido, no existe raiz")
 
-    if (F(Xi).imag!=0 or F(Xs).imag!=0):
-        corrio = False    
-        flash("Valor inicial invalido F(Xo) no esta definido")
+    
     #Ejecucion del metodo
     Xitemp=Xi
     Xstemp =Xs
@@ -140,9 +132,9 @@ def biseccion_show():
         plt.suptitle(traduccion('funcion'))
         plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        return  render_template('error.html', title = title, anticache=anticache,dic = tradudict())
+        return  render_template('error.html', title = traduccion('biseccion'), anticache=anticache,dic = tradudict())
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict(), corrio= corrio)
+    return render_template('biseccion_show.html', title = traduccion('biseccion'), lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict(), corrio= corrio)
 
 
 ####################################################################################################################################################################################
@@ -338,19 +330,22 @@ def raices_show():
 
     corrio = True
 
-    if((F(Xo)*df2(Xo))<0):
-        corrio = False    
-        flash('Valor inicial Invalido')
+
     
-    if (F(Xo).imag!=0):
-        corrio = False    
-        flash("Valor inicial invalido F(Xo) no esta definido")
-    else:
-        try:
-            r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
-        except:
-            corrio = False
-            flash("Intervalo Invalido, no existe raiz")
+    try:
+        r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
+        corrio = True
+        if((F(Xo)*df2(Xo))<0):
+            corrio = False    
+            flash('Valor inicial Invalido')
+
+        if (F(Xo).imag!=0):
+            corrio = False    
+            flash("Valor inicial invalido F(Xo) no esta definido")
+        
+    except:
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz o la funcion o derivada no esta definida")
     #Ejecucion del metodo
     anticache = random.randint(1,99999999)
 
@@ -684,19 +679,20 @@ def newton_show():
     
     corrio = True
     
-    if((F(Xo)*D2(Xo))<0):
-        corrio = False    
-        flash('Valor inicial Invalido')
     
-    if (F(Xo).imag!=0):
-        corrio = False    
-        flash("Valor inicial invalido F(Xo) no esta definido")
-    else:
-        try:
-            r,lista = libs.newton(F,D,Xo,Tol,Ite)
-        except:
-            corrio = False
-            flash("Intervalo Invalido, no existe raiz")
+   
+    try:
+        r,lista = libs.newton(F,D,Xo,Tol,Ite)
+        if((F(Xo)*D2(Xo))<0):
+            corrio = False    
+            flash('Valor inicial Invalido')
+
+        if (F(Xo).imag!=0):
+            corrio = False    
+            flash("Valor inicial invalido F(Xo) no esta definido")
+    except:
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz o la funcion no esta definida")
     anticache = random.randint(1,99999999)
 
 
@@ -756,11 +752,31 @@ def reglaFalsa():
 @app.route('/reglaFalsa',methods =['POST'])
 def reglaFalsa_post():
     
-    Xi = float(request.form.get('Xi'))
-    Xs = float(request.form.get('Xs'))
-    Tol = float(request.form.get('Tol'))
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
+    try:
+        Xi = float(request.form.get('Xi'))
+        Xs = float(request.form.get('Xs'))
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+    except:
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('reglaFalsa.html', title = traduccion('reglaFalsa'),dic = tradudict())
+    
+    error = False
+    if(Tol<=0):
+        error = True    
+        flash("La tolerancia no puede ser negativa")
+    
+    if(Xi>Xs):
+        error = True    
+        flash("Xi debe ser mayor que Xs")
+    
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
+    
+    if(error):
+        return render_template('reglaFalsa.html', title = traduccion('reglaFalsa'),dic = tradudict())
 
     print(Xi,Xs,Tol,Ite,F)
     datos = [Xi,Xs,Tol,Ite,F]
@@ -770,7 +786,7 @@ def reglaFalsa_post():
 
 @app.route('/reglaFalsa/show',methods =['GET'])
 def reglaFalsa_show():
-
+    corrio = False
     datos = request.args.getlist('datos', None)
     Xi =float(datos[0])
     Xs =float(datos[1])
@@ -780,7 +796,19 @@ def reglaFalsa_show():
     x = Symbol('x')
     F = lambdify(x, Fo)
     
-    r,lista = libs.reglaFalsa(F,Xi,Xs,Ite,Tol)
+
+
+    try:
+        r,lista = libs.reglaFalsa(F,Xi,Xs,Ite,Tol)
+        corrio = True
+        if (F(Xi).imag!=0 or F(Xs).imag!=0):
+            corrio = False
+            flash("Valor inicial invalido F(Xo) no esta definido")
+    except:
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz o la funcion no esta definida")
+    
+    
     
     anticache = random.randint(1,99999999)
 
@@ -792,28 +820,44 @@ def reglaFalsa_show():
     #Xif = Xo
     #Xsf = r+((r-Xo)/10)
     cont = 1
-    for item in lista:
-        delt = (Xs-Xi)/10
-        xx = np.linspace(Xi-delt,Xs+delt, 1000)
-        
+    if corrio:
+        for item in lista:
+            delt = (Xs-Xi)/10
+            xx = np.linspace(Xi-delt,Xs+delt, 1000)
+            
+            yy = F(xx)
+
+
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+            plt.plot(float(item[3]),F(float(item[3])),'k*')
+            plt.plot(float(item[2]),F(float(item[2])),'r*')
+            plt.plot(xx, np.transpose(yy))
+
+            plt.axhline(y=0, color='k')
+            #plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(item[0]))
+            
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+            plt.clf()
+            cont = cont + 1
+            Xi = Xi if Xi == float(item[1]) else float(item[1])
+            Xs = Xs if Xs == float(item[3]) else float(item[3])
+    else:
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
-
-
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
-        plt.plot(float(item[3]),F(float(item[3])),'k*')
-        plt.plot(float(item[2]),F(float(item[2])),'r*')
+        plt.plot(Xi,F(Xi),'k*')
+        plt.plot(Xs,F(Xs),'k*')
         plt.plot(xx, np.transpose(yy))
-
         plt.axhline(y=0, color='k')
-        #plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
-        
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.axvline(x=0, color='k')
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        cont = cont + 1
-        Xi = Xi if Xi == float(item[1]) else float(item[1])
-        Xs = Xs if Xs == float(item[3]) else float(item[3])
-    
+        return  render_template('error.html', title = traduccion('reglaFalsa'), anticache=anticache,dic = tradudict())
+
     return render_template('reglaFalsa_show.html', title = traduccion('reglaFalsa'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
     #Completar
 
@@ -825,18 +869,41 @@ def secante():
 
 @app.route('/secante',methods =['POST'])
 def secante_post():
+    try:
+        Xi = float(request.form.get('Xi'))
+        Xs = float(request.form.get('Xs'))
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('secante.html', title = traduccion('secante'),dic = tradudict())
     
-    Xi = float(request.form.get('Xi'))
-    Xs = float(request.form.get('Xs'))
-    Tol = float(request.form.get('Tol'))
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
+    error = False
+    
 
     print(Xi,Xs,Tol,Ite,F)
     datos = [Xi,Xs,Tol,Ite,F]
     
-    return redirect(url_for('secante_show', title = traduccion('secante'),datos = datos))
+    
 
+    if(Tol<=0):
+        error = True    
+        flash("La tolerancia no puede ser negativa")
+    
+    if(Xi>Xs):
+        error = True    
+        flash("Xi debe ser mayor que Xs")
+    
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
+
+    if(error):
+        return render_template('secante.html', title = traduccion('secante'),dic = tradudict())
+
+    return redirect(url_for('secante_show', title = traduccion('secante'),datos = datos))
 
 
 @app.route('/secante/show',methods =['GET'])
@@ -851,8 +918,17 @@ def secante_show():
     x = Symbol('x')
     F = lambdify(x, Fo)
     
-    r,lista = libs.secante(Xi,Xs,Tol,Ite,F)
+    try:
+        r,lista = libs.secante(Xi,Xs,Tol,Ite,F)
+        corrio = True
+        if (F(Xi).imag!=0 or F(Xs).imag!=0):
+            corrio = False    
+            flash("Valor inicial invalido F(Xo) no esta definido")
+    except:
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz")
     
+
     anticache = random.randint(1,99999999)
 
 
@@ -863,29 +939,44 @@ def secante_show():
     Xif = Xi
     Xsf = Xs
     cont = 1
-    
-    for i,item in enumerate(lista):
-        if(i == 0):
-            continue
-        temp = Xsf
-        Xsf = float(item[1])
-        delt = (Xs-Xi)
-        xx = np.linspace(Xi-delt,Xs+delt, 1000)
-        
+    if corrio:
+        for i,item in enumerate(lista):
+            if(i == 0):
+                continue
+            temp = Xsf
+            Xsf = float(item[1])
+            delt = (Xs-Xi)*5
+            xx = np.linspace(Xi-delt,Xs+delt, 1000)
+            
+            yy = F(xx)
+            x1, y1 = [Xif, Xsf], [F(Xif), F(Xsf)]
+            
+            plt.plot(xx, np.transpose(yy))
+            plt.plot(x1, y1, marker = 'o')
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+            plt.axhline(y=0, color='k')
+            #plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(item[0]))
+            
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+            plt.clf()
+            cont = cont + 1
+            Xif = temp
+    else:
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
-        x1, y1 = [Xif, Xsf], [F(Xif), F(Xsf)]
-        
+        plt.plot(Xi,F(Xi),'k*')
+        plt.plot(Xs,F(Xs),'k*')
         plt.plot(xx, np.transpose(yy))
-        plt.plot(x1, y1, marker = 'o')
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
         plt.axhline(y=0, color='k')
-        #plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
-        
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.axvline(x=0, color='k')
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        cont = cont + 1
-        Xif = temp
+        return  render_template('error.html', title = traduccion('biseccion'), anticache=anticache,dic = tradudict())
         
         
         #Xi = Xi if Xi == float(item[1]) else float(item[1])
@@ -923,6 +1014,9 @@ def puntoFijo_post():
         error = True    
         flash("Las iteraciones no pueden ser negativas")
 
+    if(error):
+        return render_template('puntoFijo.html', title = traduccion('puntoFijo'),dic = tradudict())
+
 
     print(Xo,Tol,Ite,F,G)
     datos = [Xo,Tol,Ite,F,G]
@@ -949,42 +1043,83 @@ def puntoFijo_show():
         #Inventarse algo pa cuando no menta G(X)
         #
         Go = Fo.diff(x)
+        x = Symbol('x')
         G = lambdify(x, Go)
-    
-    r,lista = libs.puntofijo(F,G,Xo,Tol,Ite)
+    r=''
+    corrio = True
+    print(F(Xo))
+    if not (definido(F,Xo) or definido(G,Xo) ):
+        corrio = False    
+        flash("Valor inicial invalido F(Xo) no esta definido")
+    else:
+        try:
+            r,lista = libs.puntofijo(F,G,Xo,Tol,Ite)
+            corrio = True
+        except:
+            corrio = False
+            flash("Intervalo Invalido, no existe raiz")
     
     anticache = random.randint(1,99999999)
-
-
+    if(r=='f'):
+        corrio = False
+        flash("Valor inicial invalido F(Xo) no esta definido")
     # Xi = min(lista)
     # Xs = max(lista)
     # Xif = Xi-((Xs-Xi)/4)
     # Xsf = Xs+((Xs-Xi)/4)
-    Xif = Xo
-    Xsf = r+((r-Xo)/2)
     cont = 1
-    for item in lista:
+    if corrio:
+        for item in lista:
 
-        xx = np.linspace(Xif,Xsf, 1000)
-        
+            Xif = Xo
+            Xsf = r+((r-Xo)/2)
+            
+            xx = np.linspace(Xif,Xsf, 1000)
+            
+            yy = F(xx)
+            Gyy = G(xx)
+
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+            plt.plot(float(item[1]),G(float(item[1])),'r*')
+            plt.plot(xx, np.transpose(yy))
+            plt.plot(xx, np.transpose(Gyy))
+            plt.axhline(y=0, color='k')
+            #plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(item[0]))
+            
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+            plt.clf()
+            cont = cont + 1
+    else:
+        Xi = Xo-abs(Xo/4)
+        Xs = 10
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
         Gyy = G(xx)
+        #plt.plot(Xi,F(Xi),'k*')
 
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
-        plt.plot(float(item[1]),G(float(item[1])),'r*')
         plt.plot(xx, np.transpose(yy))
         plt.plot(xx, np.transpose(Gyy))
         plt.axhline(y=0, color='k')
-        #plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
-        
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.axvline(x=0, color='k')
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        cont = cont + 1
+        return  render_template('error.html', title = traduccion('puntoFijo'), anticache=anticache,dic = tradudict())
+
+
     
     return render_template('puntoFijo_show.html', title = traduccion('puntoFijo'), lista = lista, tam = len(lista),anticache = anticache, dic = tradudict() )
     #Completar
 
+
+def definido(F,x):
+    if (F(x).imag!=0 or F(x)==float('NaN') or F(x)==float('-inf') or F(x)==float('inf')):
+        return False
+    return True
 
 @app.route('/jacobi',methods =['GET'])
 def jacobi():
