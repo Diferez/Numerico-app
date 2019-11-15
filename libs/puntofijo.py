@@ -30,7 +30,7 @@ def puntofijo(f, g, x, tol, n):
         if (error < tol):
             print(xn, "se aproxima a una raiz con tolerancia", tol)
         else:
-            print("Fracaso en ", n, "iteraciones")
+            return 'f'
     return xn, lista
 
 

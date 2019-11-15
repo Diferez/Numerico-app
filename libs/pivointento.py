@@ -303,6 +303,7 @@ def vandermonde(x,y):
     print("Gauss Total")
     Ab = gauss(M,y)
     A = Ab[:,:-1]
+    
 
 
 
