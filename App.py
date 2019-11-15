@@ -424,6 +424,18 @@ def tlineal_post():
         flash("Error al leer los datos, por favor comprobarlos")
         return render_template('tlineal.html', title = title,dic = tradudict())
     
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('tlineal.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if not(i==j):
+                if(xv[i]==xv[j]):
+                    flash("Error no es funcion dos valores de y en uno de x")
+                    return render_template('tlineal.html', title = title,dic = tradudict())
+
+
     if not(len(xv) == len(yv)):
         flash("Error los vectores no son de igual tamaño, F")
         return render_template('tlineal.html', title = title,dic = tradudict())
@@ -454,15 +466,16 @@ def tlineal_show():
 
     anticache = random.randint(1,99999999)
     cont=1
-    for item in r:
+    colors={0:'b', 1:'r',2:'g'}
+    for t in range(len(r)):
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
         x = Symbol('x')
-        F = lambdify(x, item)
+        F = lambdify(x, r[t])
         yy = F(xx)
 
-        plt.plot(xx, np.transpose(yy),'g')
+        plt.plot(xx, np.transpose(yy), colors[t])
         plt.axhline(y=0, color='k')
 
     plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
@@ -507,9 +520,10 @@ def tcuadra_post():
             return render_template('tcuadra.html', title = title,dic = tradudict())
     for i in range(len(xv)):
         for j in range(len(xv)):
-            if(xv[i]==xv[j]):
-                flash("Error no es funcion dos valores de y en uno de x")
-                return render_template('tcuadra.html', title = title,dic = tradudict())
+            if not(i==j):
+                if(xv[i]==xv[j]):
+                    flash("Error no es funcion dos valores de y en uno de x")
+                    return render_template('tcuadra.html', title = title,dic = tradudict())
 
     return redirect(url_for('tcuadra_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
@@ -537,18 +551,18 @@ def tcuadra_show():
 
     anticache = random.randint(1,99999999)
     cont=1
-    for item in r:
+    colors={0:'b', 1:'r',2:'g'}
+    for t in range(len(r)):
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
         x = Symbol('x')
-        F = lambdify(x, item)
-        print(F)
+        F = lambdify(x, r[t])
         yy = F(xx)
 
-        plt.plot(xx, np.transpose(yy),'g')
+        plt.plot(xx, np.transpose(yy), colors[t])
         plt.axhline(y=0, color='k')
-        
+  
     plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
     plt.clf()
     return render_template('tcuadra_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
@@ -587,9 +601,10 @@ def tcubi_post():
             return render_template('tcubi.html', title = title,dic = tradudict())
     for i in range(len(xv)):
         for j in range(len(xv)):
-            if(xv[i]==xv[j]):
-                flash("Error no es funcion dos valores de y en uno de x")
-                return render_template('tcubi.html', title = title,dic = tradudict())
+            if not(i==j):
+                if(xv[i]==xv[j]):
+                    flash("Error no es funcion dos valores de y en uno de x")
+                    return render_template('tcubi.html', title = title,dic = tradudict())
 
     if not(len(xv) == len(yv)):
         flash("Error los vectores no son de igual tamaño, F")
@@ -621,17 +636,18 @@ def tcubi_show():
 
     anticache = random.randint(1,99999999)
     cont=1
-    for item in r:
+    colors={0:'b', 1:'r',2:'g'}
+    for t in range(len(r)):
 
         xx = np.linspace(Xitemp, Xstemp, 1000)
         
         x = Symbol('x')
-        F = lambdify(x, item)
+        F = lambdify(x, r[t])
         yy = F(xx)
 
-        plt.plot(xx, np.transpose(yy),'g')
+        plt.plot(xx, np.transpose(yy), colors[t])
         plt.axhline(y=0, color='k')
-        
+  
     plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
     plt.clf()
     return render_template('tcubi_show.html', title = title, lista = lista, lar = lar,r = r, salir = salir, anticache=anticache, tam = len(r),dic=tradudict())
@@ -1330,6 +1346,7 @@ def lagrange():
 @app.route('/lagrange',methods =['POST'])
 def lagrange_post():
     error = False
+    title='Lagreange'
     try: 
         x = str(request.form.get('X'))
         xv = formatearVector(x)
@@ -1345,6 +1362,18 @@ def lagrange_post():
         error = True
         flash("El tamaño de los vectores no coinside")
     
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('lagrange.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if not(i==j):
+                if(xv[i]==xv[j]):
+                    flash("Error no es funcion dos valores de y en uno de x")
+                    return render_template('lagrange.html', title = title,dic = tradudict())
+
+
     if(error):
         return render_template('lagrange.html', title = 'Lagreange',dic = tradudict())
 
@@ -1746,6 +1775,18 @@ def dd_post():
         error = True
         flash("Los vectores no tienen el mismo tamaño")
     
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('dd.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if not(i==j):
+                if(xv[i]==xv[j]):
+                    flash("Error no es funcion dos valores de y en uno de x")
+                    return render_template('dd.html', title = title,dic = tradudict())
+
+
     if(error):
         return render_template('dd.html', title = title,dic = tradudict())
 
