@@ -3,8 +3,9 @@ import numpy as np
 import libs
 import random
 
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, jsonify, request, render_template, redirect, url_for, flash
 from flask_cors import CORS
+from flask_session import Session
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 
@@ -15,6 +16,10 @@ from sympy.parsing.sympy_parser import parse_expr
 lang = 'Es'
 #Inicializacion de la App
 app = Flask(__name__, template_folder='templates',static_folder='statics')
+sess = Session()
+app.config['SECRET_KEY'] = 'reds209ndsldssdsljdsldsdsljdsldksdksdsdfsfsfsfis'
+app.config['SESSION_TYPE'] = 'filesystem'
+sess.init_app(app)
 CORS(app)
 
 
@@ -29,7 +34,7 @@ def biseccion():
     iteraciones = traduccion('iteraciones')
     funcion = traduccion('funcion')
     salir = traduccion('salir')
-    return render_template('biseccion.html', title = title,dic = tradudict, correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
+    return render_template('biseccion.html', title = title,dic = tradudict(), correr = correr, tolerancia = tolerancia, iteraciones = iteraciones,funcion = funcion, xs = Xs, xi = Xi,salir=salir)
 
 
 @app.route('/biseccion',methods =['POST'])
@@ -41,7 +46,21 @@ def biseccion_post():
     Tol = float(request.form.get('Tol'))
     Ite = float(request.form.get('Ite'))
     F = request.form.get('F')
-    #Captura de datos del formulario
+
+    error = False
+    if(Tol<=0):
+        error = True    
+        flash("La tolerancia no puede ser negativa")
+    
+    if(Xi>Xs):
+        error = True    
+        flash("Xi debe ser mayor que Xs")
+    
+
+    
+    if(error):
+        return render_template('biseccion.html', title = title,dic = tradudict())
+
     print(Xi,Xs,Tol,Ite,F)
     datos = [Xi,Xs,Tol,Ite,F]
 
@@ -63,29 +82,51 @@ def biseccion_show():
     x = Symbol('x')
     F = lambdify(x, Fo)
     #Formateo de los datos
-    r,lista = libs.biseccion(F,Xi,Xs,Ite,Tol)
+    try:
+        r,lista = libs.biseccion(F,Xi,Xs,Ite,Tol)
+        corrio = True
+    except:
+        corrio = False
+        flash("Intervalo Invalido, no existe raiz")
     #Ejecucion del metodo
     Xitemp=Xi
     Xstemp =Xs
     anticache = random.randint(1,99999999)
-    for item in lista:
+    if corrio:
+        for item in lista:
 
-        xx = np.linspace(Xitemp, Xstemp, 1000)
-        
+            xx = np.linspace(Xitemp, Xstemp, 1000)
+            
+            yy = F(xx)
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+            plt.plot(float(item[3]),F(float(item[3])),'k*')
+            plt.plot(xx, np.transpose(yy))
+            plt.axhline(y=0, color='k')
+            plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(item[0]))
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
+            plt.clf()
+            # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
+            # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
+            #Creacion de las imagenes para la animacion de la grafica
+    else:
+
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
-        plt.plot(float(item[3]),F(float(item[3])),'k*')
+        plt.plot(Xi,F(Xi),'k*')
+        plt.plot(Xs,F(Xs),'k*')
         plt.plot(xx, np.transpose(yy))
         plt.axhline(y=0, color='k')
         plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(item[0]))
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        # Xitemp = Xitemp if Xitemp ==float(item[1]) else float(item[1])
-        # Xstemp = Xstemp if Xstemp ==float(item[3]) else float(item[3])
-        #Creacion de las imagenes para la animacion de la grafica
+        return  render_template('error.html', title = title, anticache=anticache,dic = tradudict())
 
-    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict())
+    return render_template('biseccion_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = bshowr,salir = salir, anticache=anticache,dic = tradudict(), corrio= corrio)
 
 @app.route('/busquedas',methods =['GET'])
 def busquedas():
@@ -122,7 +163,14 @@ def busquedas_show():
     Fo = parse_expr(datos[3].replace('^','**'))
     x = Symbol('x')
     F = lambdify(x, Fo)
-    r,lista = libs.busquedasincrementales(F,Xo,Delta,Ite)
+    
+    try:
+        r,lista = libs.busquedasincrementales(F,Xo,Delta,Ite)
+        corrio = True
+    except AssertionError:
+        corrio = False
+        flash(AssertionError)
+
     anticache = random.randint(1,99999999)
 
 
@@ -131,22 +179,35 @@ def busquedas_show():
     Xif = Xi-((Xs-Xi)/4)
     Xsf = Xs+((Xs-Xi)/4)
     cont = 1
-    for item in lista:
+    if corrio:
+        for item in lista:
 
+            xx = np.linspace(Xif,Xsf, 1000)
+            
+            yy = F(xx)
+            plt.plot(float(item[0]),F(float(item[0])),'k*')
+            plt.plot(float(item[1]),F(float(item[1])),'k*')
+            plt.plot(xx, np.transpose(yy))
+            plt.axhline(y=0, color='k')
+            plt.axvline(x=0, color='k')
+            plt.suptitle('Iteracion {0}'.format(cont))
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+            plt.clf()
+            cont = cont + 1
+    else:
         xx = np.linspace(Xif,Xsf, 1000)
-        
         yy = F(xx)
-        plt.plot(float(item[0]),F(float(item[0])),'k*')
-        plt.plot(float(item[1]),F(float(item[1])),'k*')
+        plt.plot(Xi,F(Xi),'k*')
+        plt.plot(Xs,F(Xs),'k*')
         plt.plot(xx, np.transpose(yy))
         plt.axhline(y=0, color='k')
         plt.axvline(x=0, color='k')
-        plt.suptitle('Iteracion {0}'.format(cont))
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,cont))
+        plt.suptitle('Funcion'.format(cont))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
         plt.clf()
-        cont = cont + 1
+        
 
-    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir, dic = tradudict() )
+    return render_template('busquedas_show.html', title = title, lista = lista, tam = len(lista),anticache = anticache,salir = salir, dic = tradudict(),corrio = corrio)
     #Completar
     pass
 
@@ -1430,7 +1491,8 @@ Es = {'title':"Análisis numérico",'correr':'Correr', 'biseccion':"Bisección",
           'dFlinea' :'La unión más simple entre dos puntos es una línea recta. Los trazadores de primer grado para un grupo de datos ordenados se pueden definir como un conjunto de funciones lineales.',
           'dFvander' :'Una matriz de Vandermonde es aquella que presenta una progresión geométrica en cada fila.', 'polinomio':'Polinomio',
           'dd':'Diferencias divididas y el polinomio de Newton', 'quap':'Trazadores Cuadráticos','cubi':'Trazadores Cubicos','line':'Trazadores lineales','abr':'Abrir', 'mdd':'Matriz de diferencias divididas',
-          'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar el idioma a Ingles', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)'
+          'dFgrafi' : 'Permite gracificar funciones', 'dFeval':'Permitir evaluar una función ingresada', 'dFidio':'Cambiar el idioma a Ingles', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)',
+          'info' : 'Información'
           }
 En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'busquedas':"Incremental search", 'raicesI':'roots', 'gaussSimple':'Simple Gaussian','solucion':'Solution','graficadora':'Plotter',
           'Xi':'Xi','Xs':'Xs', 'tolerancia':'Tolerance','iteraciones':'Iterations','funcion':'Function', 'salir':'Back', 'gaussParcial':'Partial Gaussian', 'gaussTotal':'Total Gaussian', 'evaluador':'Evaluator',
@@ -1463,7 +1525,8 @@ En = {'title':"Numerical analysis",'correr':'Run', 'biseccion':"Bisection", 'bus
           'dFlinea' :'The simplest union between two points is a straight line. First-degree plotters for a group of ordered data can be defined as a set of linear functions.',
           'dFvander' :'A Vandermonde matrix is ​​one that presents a geometric progression in each row.', 'polinomio':'Polynomial',
           'dd':'Split differences and the Newton polynomial', 'quap':'Quadratic Spline', 'cubi':'Cubic Spline', 'line':'Linear Spline','abr':'Open', 'mdd':'Split differences Matrix',
-          'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)'
+          'dFgrafi' : 'It allows to gracify functions', 'dFeval':'Allow to evaluate an entered function', 'dFidio':'Change language to Spanish', 'popf':'Ex: x**2+2*sin(x)*log(x)-exp(x)',
+          'info':'Information'
           }
 
 app.run(host= '0.0.0.0', debug=True)
