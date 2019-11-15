@@ -395,7 +395,7 @@ def raices_show():
     return render_template('raices_show.html', title = traduccion('raices'), lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
 
 
-#Ruta Raiz
+#Splines 
 
 @app.route('/tlineal',methods =['GET'])
 def tlineal():
@@ -422,6 +422,10 @@ def tlineal_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+    
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
         return render_template('tlineal.html', title = title,dic = tradudict())
     
     return redirect(url_for('tlineal_show', title = title,datos = datos))
@@ -491,8 +495,22 @@ def tcuadra_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
-        return render_template('tlineal.html', title = title,dic = tradudict())
+        return render_template('tcuadra.html', title = title,dic = tradudict())
     
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
+        return render_template('tcuadra.html', title = title,dic = tradudict())
+    
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('tcuadra.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if(xv[i]==xv[j]):
+                flash("Error no es funcion dos valores de y en uno de x")
+                return render_template('tcuadra.html', title = title,dic = tradudict())
+
     return redirect(url_for('tcuadra_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -525,6 +543,7 @@ def tcuadra_show():
         
         x = Symbol('x')
         F = lambdify(x, item)
+        print(F)
         yy = F(xx)
 
         plt.plot(xx, np.transpose(yy),'g')
@@ -560,8 +579,22 @@ def tcubi_post():
         datos = [x,y]
     except:        
         flash("Error al leer los datos, por favor comprobarlos")
-        return render_template('tlineal.html', title = title,dic = tradudict())
+        return render_template('tcubi.html', title = title,dic = tradudict())
     
+    for i in range(1,len(yv)):
+        if yv[i]==yv[i-1]:
+            flash("Error no posible derivar, F")
+            return render_template('tcubi.html', title = title,dic = tradudict())
+    for i in range(len(xv)):
+        for j in range(len(xv)):
+            if(xv[i]==xv[j]):
+                flash("Error no es funcion dos valores de y en uno de x")
+                return render_template('tcubi.html', title = title,dic = tradudict())
+
+    if not(len(xv) == len(yv)):
+        flash("Error los vectores no son de igual tamaño, F")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+
     return redirect(url_for('tcubi_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -1362,6 +1395,7 @@ def gaussSimple():
 
 @app.route('/gaussSimple',methods =['POST'])
 def gaussSimple_post():
+    error = False
     title = traduccion('gaussSimple')
     try:
         M =str(request.form.get('Matrix'))
@@ -1378,7 +1412,7 @@ def gaussSimple_post():
         datos = [M,b]
 
     except:        
-        flash("Error al leer los datos, por favor comprobarlos")
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
         return render_template('gaussSimple.html', title = title,dic = tradudict())
     
     
@@ -1394,12 +1428,14 @@ def gaussSimple_post():
         error = True
         flash("Los vectores y la matriz no tienen el mismo tamaño")
     
+    if(error):
+        return render_template('gaussSimple.html', title = title,dic = tradudict())
+    
     return redirect(url_for('gaussSimple_show', title = traduccion('gaussSimple'),datos = datos))
 
 
 @app.route('/gaussSimple/show',methods =['GET'])
 def gaussSimple_show():
-
     datos = request.args.getlist('datos', None)
 
     M =str(datos[0])
@@ -1423,24 +1459,47 @@ def gaussParcial():
 
 @app.route('/gaussParcial',methods =['POST'])
 def gaussParcial_post():
-    
-    M =str(request.form.get('Matrix'))
+    error = False
+    title = traduccion('gaussParcial')
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
 
-    Mat = formatearMatriz(M)
-    print(Mat)
-    print("post")
-    b = str(request.form.get('B'))
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
+
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('gaussParcial.html', title = title,dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
+    
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('gaussParcial.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if(error):
+        return render_template('gaussParcial.html', title = title,dic = tradudict())
     
     return redirect(url_for('gaussParcial_show', title = traduccion('gaussParcial'),datos = datos))
 
 @app.route('/gaussParcial/show',methods =['GET'])
 def gaussParcial_show():
-
+    error = False
     datos = request.args.getlist('datos', None)
 
     M =str(datos[0])
@@ -1464,20 +1523,47 @@ def gaussTotal():
 
 @app.route('/gaussTotal',methods =['POST'])
 def gaussTotal_post():
+    error = False
     
-    M =str(request.form.get('Matrix'))
+    title = traduccion('gaussTotal')
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
 
-    Mat = formatearMatriz(M)
-    print(Mat)
-    print("post")
-    b = str(request.form.get('B'))
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
+
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('gaussTotal.html', title = title,dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
+    
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('gaussTotal.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if(error):
+        return render_template('gaussTotal.html', title = title,dic = tradudict())
     
     return redirect(url_for('gaussTotal_show', title = traduccion('gaussTotal'),datos = datos))
+
+    
+
 
 @app.route('/gaussTotal/show',methods =['GET'])
 def gaussTotal_show():
@@ -1507,17 +1593,42 @@ def lu():
 @app.route('/lu',methods =['POST'])
 def lu_post():
     
-    M =str(request.form.get('Matrix'))
-
-    Mat = formatearMatriz(M)
-    print(Mat)
-    print("post")
-    b = str(request.form.get('B'))
+    error = False
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
+    title = traduccion('lu')
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
+
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
+
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('lu.html', title = title,dic = tradudict())
+    
+    
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('lu.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if(error):
+        return render_template('lu.html', title = title,dic = tradudict())
     
     return redirect(url_for('lu_show', title = traduccion('lu'),datos = datos))
 
@@ -1549,19 +1660,45 @@ def lup():
 @app.route('/lup',methods =['POST'])
 def lup_post():
     
-    M =str(request.form.get('Matrix'))
+    error = False
+    
+    title = traduccion('lup')
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
 
-    Mat = formatearMatriz(M)
-    print(Mat)
-    print("post")
-    b = str(request.form.get('B'))
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
+
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('lup.html', title = title,dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
     
-    return redirect(url_for('lup_show', title = traduccion('lu'),datos = datos))
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('lup.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if(error):
+        return render_template('lup.html', title = title,dic = tradudict())
+    
+    
+    return redirect(url_for('lup_show', title = traduccion('lup'),datos = datos))
 
 
 @app.route('/lup/show',methods =['GET'])
@@ -1591,17 +1728,28 @@ def dd():
 
 @app.route('/dd',methods =['POST'])
 def dd_post():
+    error = False
+    title = traduccion('dd')
+    try:
+        x = str(request.form.get('X'))
+        xv = formatearVector(x)
+        y = str(request.form.get('Y'))
+        yv = formatearVector(y)
+        print(y)
+        datos = [x,y]
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('dd.html', title = title,dic = tradudict())
+
+    if not(len(xv)==len(yv)):
+        error = True
+        flash("Los vectores no tienen el mismo tamaño")
     
-    x = str(request.form.get('X'))
-    xv = formatearVector(x)
+    if(error):
+        return render_template('dd.html', title = title,dic = tradudict())
 
-
-
-    y = str(request.form.get('Y'))
     
-    yv = formatearVector(y)
-    print(y)
-    datos = [x,y]
     
     return redirect(url_for('dd_show', title = traduccion('dd'),datos = datos))
 
@@ -1648,18 +1796,43 @@ def crout():
 
 @app.route('/crout',methods =['POST'])
 def crout_post():
-    
-    M =str(request.form.get('Matrix'))
+    title = 'Crout'
+    error = False
 
-    Mat = formatearMatriz(M)
-    print(Mat)
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
 
-    b = str(request.form.get('B'))
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
+
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('crout.html', title = title,dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
+    
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('crout.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if(error):
+        return render_template('crout.html', title = title,dic = tradudict())
+    
     
     return redirect(url_for('crout_show', title = 'Crout',datos = datos))
 
