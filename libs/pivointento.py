@@ -127,9 +127,10 @@ def gaussParcial(M, b):
 
 
 def gaussSimple(M, b):
-
+    
+    assert not np.linalg.det(M) == 0
     lista = []
-
+    
     Ab = np.c_[M, b]
     n, columnas = Ab.shape
     Ab = Ab.astype(float) 
