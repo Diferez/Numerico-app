@@ -415,16 +415,20 @@ def tlineal():
 def tlineal_post():
     
     title = traduccion('line')
-    x = (request.form.get('X'))
-    xv = formatearVector(x)
+    try:
+        x = (request.form.get('X'))
+        xv = formatearVector(x)
 
-    y = (request.form.get('Y'))
-    yv = formatearVector(y)
+        y = (request.form.get('Y'))
+        yv = formatearVector(y)
 
-    #Captura de datos del formulario
-    #print(X,Y)
-    datos = [x,y]
-
+        #Captura de datos del formulario
+        #print(X,Y)
+        datos = [x,y]
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+    
     return redirect(url_for('tlineal_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -480,16 +484,20 @@ def tcuadra():
 def tcuadra_post():
     
     title = traduccion('quap')
-    x = (request.form.get('X'))
-    xv = formatearVector(x)
+    try:
+        x = (request.form.get('X'))
+        xv = formatearVector(x)
 
-    y = (request.form.get('Y'))
-    yv = formatearVector(y)
+        y = (request.form.get('Y'))
+        yv = formatearVector(y)
 
-    #Captura de datos del formulario
-    #print(X,Y)
-    datos = [x,y]
-
+        #Captura de datos del formulario
+        #print(X,Y)
+        datos = [x,y]
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+    
     return redirect(url_for('tcuadra_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -545,16 +553,20 @@ def tcubi():
 def tcubi_post():
     
     title = traduccion('cubi')
-    x = (request.form.get('X'))
-    xv = formatearVector(x)
+    try:
+        x = (request.form.get('X'))
+        xv = formatearVector(x)
 
-    y = (request.form.get('Y'))
-    yv = formatearVector(y)
+        y = (request.form.get('Y'))
+        yv = formatearVector(y)
 
-    #Captura de datos del formulario
-    #print(X,Y)
-    datos = [x,y]
-
+        #Captura de datos del formulario
+        #print(X,Y)
+        datos = [x,y]
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('tlineal.html', title = title,dic = tradudict())
+    
     return redirect(url_for('tcubi_show', title = title,datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
@@ -1197,18 +1209,37 @@ def gaussSimple():
 
 @app.route('/gaussSimple',methods =['POST'])
 def gaussSimple_post():
-    
-    M =str(request.form.get('Matrix'))
+    title = traduccion('gaussSimple')
+    try:
+        M =str(request.form.get('Matrix'))
+          
+        Mat = formatearMatriz(M)
+        deter = np.linalg.det(Mat) 
+        print(Mat)
 
-    Mat = formatearMatriz(M)
-    print(Mat)
+        b = str(request.form.get('B'))
+        
+        bv = formatearVector(b)
+        print(b)
+        print(M,b)
+        datos = [M,b]
 
-    b = str(request.form.get('B'))
+    except:        
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('gaussSimple.html', title = title,dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
-    print(M,b)
-    datos = [M,b]
+    
+    if deter <= 0:        
+        flash("Error, determinante cercana a 0")
+        return render_template('gaussSimple.html', title = title,dic = tradudict())
+    
+    if not(len(Mat[0])==len(bv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
+    
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
     
     return redirect(url_for('gaussSimple_show', title = traduccion('gaussSimple'),datos = datos))
 
