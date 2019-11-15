@@ -428,7 +428,7 @@ def tcuadra_show():
 
 
     #Formateo de los datos
-    lista,r = libs.trazaCuadra(xv)
+    lista,r = libs.trazaCuadra(xv,yv)
     #Ejecucion del metodo
     Xitemp = np.amin(xv)
     Xstemp = np.amax(xv)
