@@ -264,27 +264,44 @@ def min(lista):
         for x in item:
             minn = float(x) if minn>float(x) else minn
     return minn
-
+###############################################################################################################################################################################
 @app.route('/raices',methods =['GET'])
 def raices():
-    return render_template('raices.html', title = title, correr = correr, tolerancia = tol, iteraciones = iteraciones,dic = tradudict() )
+    return render_template('raices.html', title = traduccion('raices'),dic = tradudict() )
 
 
 @app.route('/raices',methods =['POST'])
 def raices_post():
+    error = False
+    try:
+        Xo = float(request.form.get('Xo'))
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+        df1 = request.form.get('df1')
+        df2 = request.form.get('df2')
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('raices.html', title = traduccion('raices'),dic = tradudict())
+    error = False
+    if(Tol<=0):
+        error = True
+        flash("La tolerancia no puede ser negativa")
     
-    title = traduccion('raices')
-    Xo = float(request.form.get('Xo'))
-    Tol = float(request.form.get('Tol'))
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
-    df1 = request.form.get('df1')
-    df2 = request.form.get('df2')
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
+    
+    if(error):
+        return render_template('raices.html', title = 'raices',dic = tradudict())
+
+    
     #Captura de datos del formulario
     print(Xo,Tol,Ite,F)
     datos = [Xo,Tol,Ite,F,df1,df2]
 
-    return redirect(url_for('raices_show', title = title,datos = datos))
+    return redirect(url_for('raices_show', title = traduccion('raices'),datos = datos))
     #Redirecion y envio de datos a la pantalla de muestra
 
 @app.route('/raices/show',methods =['GET'])
@@ -303,6 +320,7 @@ def raices_show():
         x = Symbol('x')
         df1 = lambdify(x, Dfo1)
     else:
+        x = Symbol('x')
         Dfo1 = Fo.diff(x)
         df1 = lambdify(x, Dfo1)
     if(datos[5]!=""):
@@ -313,34 +331,73 @@ def raices_show():
         Dfo2 = Dfo1.diff(x)
         df2 = lambdify(x, Dfo2)
 
+
     x = Symbol('x')
     F = lambdify(x, Fo)
     #Formateo de los datos
-    r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
+
+    corrio = True
+
+    if((F(Xo)*df2(Xo))<0):
+        corrio = False    
+        flash('Valor inicial Invalido')
+    
+    if (F(Xo).imag!=0):
+        corrio = False    
+        flash("Valor inicial invalido F(Xo) no esta definido")
+    else:
+        try:
+            r,lista = libs.RaizM(F,df1,df2,Xo,Tol,Ite)
+        except:
+            corrio = False
+            flash("Intervalo Invalido, no existe raiz")
     #Ejecucion del metodo
-    Xitemp=Xo
-    Xstemp =r+((r-Xo)/10)
-
-    print (df1)
-    print (df2)
     anticache = random.randint(1,99999999)
-    for item in lista:
 
-        xx = np.linspace(Xitemp, Xstemp, 1000)
-        
+    
+
+    
+    if corrio:
+        Xitemp=Xo
+        Xstemp =r+((r-Xo)/10)
+
+        print (df1)
+        print (df2)
+        for item in lista:
+
+            xx = np.linspace(Xitemp, Xstemp, 1000)
+            
+            yy = F(xx)
+            yy1 = df1(xx)
+            yy2 = df2(xx)
+            plt.plot(xx, np.transpose(yy),'g')
+            plt.plot(xx, np.transpose(yy1),'b')
+            plt.plot(xx, np.transpose(yy2),'r')
+            plt.axhline(y=0, color='k')
+            #plt.axvline(x=0, color='k')
+            #plt.suptitle('Iteracion {0}'.format(item[0]))
+            plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
+            plt.clf()
+    else:
+        Xi = Xo-abs(Xo/4)
+        Xs = 10
+        Xif = Xi-((Xs-Xi)/4)
+        Xsf = Xs+((Xs-Xi)/4)
+
+        xx = np.linspace(Xif, Xsf, 1000)
         yy = F(xx)
-        yy1 = df1(xx)
-        yy2 = df2(xx)
-        plt.plot(xx, np.transpose(yy),'g')
-        plt.plot(xx, np.transpose(yy1),'b')
-        plt.plot(xx, np.transpose(yy2),'r')
-        plt.axhline(y=0, color='k')
-        #plt.axvline(x=0, color='k')
-        #plt.suptitle('Iteracion {0}'.format(item[0]))
-        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,item[0]))
-        plt.clf()
+        #plt.plot(Xi,F(Xi),'k*')
 
-    return render_template('raices_show.html', title = title, lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
+        plt.plot(xx, np.transpose(yy))
+        plt.axhline(y=0, color='k')
+        plt.axvline(x=0, color='k')
+        plt.suptitle(traduccion('funcion'))
+        plt.savefig('statics/temp/{0}{1}.png'.format(anticache,1))
+        plt.clf()
+        return  render_template('error.html', title = traduccion('raices'), anticache=anticache,dic = tradudict())
+
+
+    return render_template('raices_show.html', title = traduccion('raices'), lista = lista, tam = len(lista),Tol = Tol, r = r, bshowr = rmhowr,salir = salir, anticache=anticache,dic = tradudict())
 
 
 #Ruta Raiz
@@ -846,13 +903,27 @@ def puntoFijo():
 @app.route('/puntoFijo',methods =['POST'])
 def puntoFijo_post():
     
-    Xo = float(request.form.get('Xo'))
-    Tol = float(request.form.get('Tol'))
+    error = False
+    try:
+        Xo = float(request.form.get('Xo'))
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        F = request.form.get('F')
+        G = request.form.get('G')
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos")
+        return render_template('puntoFijo.html', title = traduccion('puntoFijo'),dic = tradudict())
     
+    if(Tol<=0):
+        error = True
+        flash("La tolerancia no puede ser negativa")
+    
+    if(Ite<=0):
+        error = True    
+        flash("Las iteraciones no pueden ser negativas")
 
-    Ite = float(request.form.get('Ite'))
-    F = request.form.get('F')
-    G = request.form.get('G')
+
     print(Xo,Tol,Ite,F,G)
     datos = [Xo,Tol,Ite,F,G]
     
