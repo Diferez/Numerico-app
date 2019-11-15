@@ -1127,29 +1127,35 @@ def jacobi():
 
 @app.route('/jacobi',methods =['POST'])
 def jacobi_post():
+    error = False
+    try:
+        M =str(request.form.get('Matrix'))
+        Mat = formatearMatriz(M)
+        b = str(request.form.get('B'))
+        bv = formatearVector(b)
+        x = str(request.form.get('X'))
+        xv = formatearVector(x)
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        Norma = float(request.form.get('Norma'))
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('jacobi.html', title = 'Jacobi',dic = tradudict())
     
-    M =str(request.form.get('Matrix'))
-
-    Mat = formatearMatriz(M)
-    print(Mat)
-
-    b = str(request.form.get('B'))
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("La matriz no es cuadrada")
+    if not(len(Mat[0])==len(bv) and len(bv)==len(xv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
     
-    bv = formatearVector(b)
-    print(b)
-    
-    x = str(request.form.get('X'))
-    xv = formatearVector(x)
-    
-    print(xv)
+    if(np.linalg.det(Mat) == 0):
+        error = True
+        flash("La matriz tiene determinante 0")
 
-
-    Tol = float(request.form.get('Tol'))
-    Ite = float(request.form.get('Ite'))
-
-    Norma = float(request.form.get('Norma'))
-
-
+    if(error):
+        return render_template('jacobi.html', title = 'Jacobi6',dic = tradudict())
     print(M,b,x,Ite,Tol,Norma)
     datos = [M,b,x,Ite,Tol,Norma]
     
@@ -1184,7 +1190,7 @@ def formatearMatriz(M):
         M[i]= M[i].split(' ')
 
     for i in range(len(M)):
-        for j in range(len(M)):
+        for j in range(len(M[0])):
             if M[i][j] == '':
                 M[i].remove(M[i][j])
     
@@ -1215,28 +1221,35 @@ def gaussSaidel():
 @app.route('/gaussSaidel',methods =['POST'])
 def gaussSaidel_post():
     
-    M =str(request.form.get('Matrix'))
-
-    Mat = formatearMatriz(M)
-    print(Mat)
-
-    b = str(request.form.get('B'))
+    error = False
+    try:
+        M =str(request.form.get('Matrix'))
+        Mat = formatearMatriz(M)
+        b = str(request.form.get('B'))
+        bv = formatearVector(b)
+        x = str(request.form.get('X'))
+        xv = formatearVector(x)
+        Tol = float(request.form.get('Tol'))
+        Ite = float(request.form.get('Ite'))
+        Norma = float(request.form.get('Norma'))
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('gaussSaidel.html', title = 'GaussSaidel',dic = tradudict())
     
-    bv = formatearVector(b)
-    print(b)
+    if not(len(Mat)==len(Mat[0])):
+        error = True
+        flash("La matriz no es cuadrada")
+    if not(len(Mat[0])==len(bv) and len(bv)==len(xv)):
+        error = True
+        flash("Los vectores y la matriz no tienen el mismo tamaño")
     
-    x = str(request.form.get('X'))
-    xv = formatearVector(x)
-    
-    print(xv)
+    if(np.linalg.det(Mat) == 0):
+        error = True
+        flash("La matriz tiene determinante 0")
 
-
-    Tol = float(request.form.get('Tol'))
-    Ite = float(request.form.get('Ite'))
-
-    Norma = float(request.form.get('Norma'))
-
-
+    if(error):
+        return render_template('gaussSaidel.html', title = 'GaussSaidel',dic = tradudict())
     print(M,b,x,Ite,Tol,Norma)
     datos = [M,b,x,Ite,Tol,Norma]
     
@@ -1271,19 +1284,24 @@ def lagrange():
 
 @app.route('/lagrange',methods =['POST'])
 def lagrange_post():
-    x = str(request.form.get('X'))
+    error = False
+    try: 
+        x = str(request.form.get('X'))
+        xv = formatearVector(x)
+        y = str(request.form.get('Y'))
+        yv = formatearVector(y)
+        Num = int(request.form.get('Num'))
+    except:
+        error = True
+        flash("Error al leer los datos, por favor comprobarlos, comprobar que la matriz sea cuadrada")
+        return render_template('lagrange.html', title = 'Lagreange',dic = tradudict())
     
-    xv = formatearVector(x)
-    print(x)
+    if not(len(xv)==len(yv)):
+        error = True
+        flash("El tamaño de los vectores no coinside")
     
-    y = str(request.form.get('Y'))
-    yv = formatearVector(y)
-    
-    print(yv)
-
-
-    Num = int(request.form.get('Num'))
-
+    if(error):
+        return render_template('lagrange.html', title = 'Lagreange',dic = tradudict())
 
     print(x,y,Num)
     datos = [x,y,Num]
