@@ -64,44 +64,19 @@
                 {% endfor %}
                 {% endif %}
                 {% endwith %}
-                <form class="ui large form" method="post" action="/biseccion" onsubmit="return validateForm()">
+                <form class="ui large form" method="post" action="/biseccion">
                     <div class="ui stacked segment">
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xi" placeholder="{{dic['Xi']}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xs" placeholder="{{dic['Xs']}}">
-                                </div>
-                            </div>
+                            {% include 'base/Xi.html' %}
+                            {% include 'base/Xs.html' %}
                         </div>
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="{{dic['tolerancia']}}" Id="Tol">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="{{dic['iteraciones']}}">
-                                </div>
-                            </div>
-                        </div>
+                            {% include 'base/Tol.html' %}
+                            {% include 'base/Ite.html' %}
 
+                        </div>
                         <div class="two fields">
-                            <div class="field" data-tooltip="{{dic['popf']}}">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="F" placeholder="{{dic['funcion']}}">
-                                </div>
-                            </div>
+                            {% include 'base/F.html' %}
                         </div>
 
                         <br>

@@ -41,32 +41,12 @@
                 <form class="ui large form" method="post" action="/busquedas">
                     <div class="ui stacked segment">
                         <div class="two fields">
-                            <div class="field" data-tooltip="{{dic['popxo']}}">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xo" placeholder="{{Xo}}" >
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Delta" placeholder="{{delta}}">
-                                </div>
-                            </div>
+                            {% include 'base/Xo.html' %}
+                            {% include 'base/Delta.html' %}
                         </div>
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="{{iteraciones}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input" data-tooltip="{{dic['popf']}}">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="F" placeholder="{{funcion}}">
-                                </div>
-                            </div>
+                            {% include 'base/Ite.html' %}
+                            {% include 'base/F.html' %}
                         </div>
 
 
