@@ -38,22 +38,12 @@
                         {{title}}
                     </div>
                 </h2>
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/gaussTotal">
                     <div class="ui stacked segment">
                         
-                        <div class="field" data-tooltip="{{dic['popm']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="Matrix" placeholder="{{dic['matrixdata']}}">
-                            </div>
-                        </div>
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="B" placeholder="{{dic['B']}}">
-                            </div>
-                        </div>
+                        {% include 'base/M.html' %}
+                        {% include 'base/B.html' %}
 
                         <br>
                         <input type="submit" class="ui green large submit button" value="Correr">

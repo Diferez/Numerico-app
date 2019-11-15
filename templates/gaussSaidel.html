@@ -38,57 +38,22 @@
                         {{title}}
                     </div>
                 </h2>
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/gaussSaidel">
                     <div class="ui stacked segment">
                         
-                        <div class="field" data-tooltip="{{dic['popm']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="Matrix" placeholder="{{dic['matrixdata']}}">
-                            </div>
-                        </div>
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="B" placeholder="{{dic['B']}}">
-                            </div>
-                        </div>
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="X" placeholder="{{dic['X']}}">
-                            </div>
-                        </div>
-                        
+                        {% include 'base/M.html' %}
+                        {% include 'base/B.html' %}
+                        {% include 'base/X.html' %}                        
 
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="{{dic['iteraciones']}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="{{dic['tolerancia']}}">
-                                </div>
-                            </div>
+                            {% include 'base/Ite.html' %}
+                            {% include 'base/Tol.html' %}
                         </div>
 
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Norma" step="any" placeholder="{{dic['norma']}}">
-                                </div>
-                            </div>
+                            {% include 'base/Norm.html' %}
                         </div>
-
-
-
                         <br>
                         <input type="submit" class="ui green large submit button" value="Correr">
                     </div>

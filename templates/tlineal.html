@@ -38,13 +38,15 @@
                         {{title}}
                     </div>
                 </h2>
-                
+
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/tlineal">
                     <div class="ui stacked segment">
                         {% include 'base/X.html' %}
                         {% include 'base/Y.html' %}               
                     </div>
                     <br>
+
                     <input type="submit" class="ui green large submit button" value="{{correr}}">
                 </div>
             </form>
