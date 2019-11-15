@@ -38,24 +38,12 @@
                         {{title}}
                     </div>
                 </h2>
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/eva">
                     <div class="ui stacked segment">
 
-
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="F" placeholder="{{dic['funcion']}}">
-                            </div>
-                        </div>
-
-                        <div class="field" >
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="number" name="Xi" step="any" placeholder="{{dic['Xi']}}">
-                            </div>
-                        </div>
+                        {% include 'base/Xi.html' %}
+                        {% include 'base/F.html' %}
                         
                         <br>
                         <input type="submit" class="ui green large submit button" value="Correr">

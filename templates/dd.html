@@ -38,27 +38,13 @@
                         {{title}}
                     </div>
                 </h2>
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/dd">
                     <div class="ui stacked segment">
                         
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="X" placeholder="{{dic['X']}}">
-                            </div>
-                        </div>
-
-                        <div class="field" data-tooltip="{{dic['popv']}}">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="Y" placeholder="{{dic['Y']}}">
-                            </div>
-                        </div>
+                        {% include 'base/X.html' %}
+                        {% include 'base/Y.html' %} 
                         
-
-
-
                         <br>
                         <input type="submit" class="ui green large submit button" value="Correr">
                     </div>

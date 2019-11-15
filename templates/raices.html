@@ -38,51 +38,20 @@
                         {{title}}
                     </div>
                 </h2>
+                {% include 'base/error.html' %}
                 <form class="ui large form" method="post" action="/raices">
                     <div class="ui stacked segment">
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" step="any" name="Xo" placeholder="{{dic['Xo']}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" step="any" name="F" placeholder="{{dic['funcion']}}">
-                                </div>
-                            </div>
+                            {% include 'base/Xo.html' %}
+                            {% include 'base/F.html' %}
                         </div>
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="df1" placeholder="{{dic['df1']}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="df2" placeholder="{{dic['df2']}}">
-                                </div>
-                            </div>
-                        </div>
+                            {% include 'base/df1.html' %}
+                            {% include 'base/df2.html' %}
 
                         <div class="two fields">
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="text" name="Tol" placeholder="{{dic['tolerancia']}}">
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="user icon"></i>
-                                    <input type="number" name="Ite" placeholder="{{dic['iteraciones']}}">
-                                </div>
-                            </div>
+                            {% include 'base/Ite.html' %}
+                            {% include 'base/Tol.html' %}
                         </div>
                     </div>
 
